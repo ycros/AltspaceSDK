@@ -145,21 +145,23 @@ ChessApp = (function(){
 						alt.Object3DSync({position: true}),
 						alt.Drag({
 							x: {min: -1 * limit, max: limit},
-		          z: {min: -1 * limit, max: limit}
-		        }),
+				  z: {min: -1 * limit, max: limit}
+				}),
 						alt.HoverColor({
 							//event: 'cursordown',
 							scene: sim.scene,
 							color: new THREE.Color(0.8, 0.2, 0.2)
 						})
 					);
-					object3d.addEventListener('cursorenter', function () {
-					    nativefire.visible = true;
-					    object3d.add(nativefire);
-					});
-					object3d.addEventListener('cursorleave', function () {
-					    nativefire.visible = false;
-					});
+					if (altspace.inClient) {
+						object3d.addEventListener('cursorenter', function () {
+							nativefire.visible = true;
+							object3d.add(nativefire);
+						});
+						object3d.addEventListener('cursorleave', function () {
+							nativefire.visible = false;
+						});
+					}
 					gameObjects.add(object3d);
 					return object3d;
 				}
