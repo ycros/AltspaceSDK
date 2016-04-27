@@ -60,16 +60,23 @@ ChessApp = (function(){
 			altspace.getEnclosure().then(function (enclosure) {
 				gameObjects.position.y -= enclosure.innerHeight / 2;
 			});
+
+			altspace.instantiateNativeObject("Colliders/SphereNavigable").then(function (nativeObject) {
+			    sim.scene.add(nativeObject);
+			    nativeObject.scale.set(200, 200, 200);
+			    nativeObject.position.set(0, -360, 0);
+			});
+
+			altspace.instantiateNativeObject("ParticleSystems/ExplosionMobile").then(function (nativeObject) {
+			    nativefire = nativeObject;
+			    loadModels(initBoard);
+			});
 		} else {
 			sim.camera.position.z = CONFIG.boardSize;
 			sim.camera.position.y = CONFIG.boardSize + 100;
 			sim.camera.lookAt(sim.scene.position);
+			loadModels(initBoard);
 		}
-
-		altspace.instantiateNativeObject("Particle Systems/Fire").then(function (nativeObject) {
-		    nativefire = nativeObject;
-		    loadModels(initBoard);
-		});
 
 		
 
