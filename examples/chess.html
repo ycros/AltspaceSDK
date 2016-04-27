@@ -27,6 +27,8 @@ ChessApp = (function(){
 	var blackPieces = [];
 	var gameObjects = new THREE.Group();
 
+    var nativefire;
+
 	var CONFIG = Object.freeze({//constants
 		boardSize: 700,//chess piece models are scaled to fit the board
 		tableHeight: 0,//chess board is raised to be on top of table
@@ -64,7 +66,12 @@ ChessApp = (function(){
 			sim.camera.lookAt(sim.scene.position);
 		}
 
-		loadModels(initBoard);
+		altspace.instantiateNativeObject("Particle Systems/Fire").then(function (nativeObject) {
+		    nativefire = nativeObject;
+		    loadModels(initBoard);
+		});
+
+		
 
 	}//end main
 
@@ -139,6 +146,13 @@ ChessApp = (function(){
 							color: new THREE.Color(0.8, 0.2, 0.2)
 						})
 					);
+					object3d.addEventListener('cursorenter', function () {
+					    nativefire.visible = true;
+					    object3d.add(nativefire);
+					});
+					object3d.addEventListener('cursorleave', function () {
+					    nativefire.visible = false;
+					});
 					gameObjects.add(object3d);
 					return object3d;
 				}
