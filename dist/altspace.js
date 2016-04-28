@@ -1,3 +1,2316 @@
+
+(function(root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(["three"], factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory(require('three'));
+  } else {
+    root.altspace = factory(root.THREE);
+  }
+}(this, function(THREE) {
+
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/object/define-property"), __esModule: true };
+},{"core-js/library/fn/object/define-property":4}],2:[function(require,module,exports){
+"use strict";
+
+exports["default"] = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+exports.__esModule = true;
+},{}],3:[function(require,module,exports){
+"use strict";
+
+var _Object$defineProperty = require("babel-runtime/core-js/object/define-property")["default"];
+
+exports["default"] = (function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+
+      _Object$defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+})();
+
+exports.__esModule = true;
+},{"babel-runtime/core-js/object/define-property":1}],4:[function(require,module,exports){
+var $ = require('../../modules/$');
+module.exports = function defineProperty(it, key, desc){
+  return $.setDesc(it, key, desc);
+};
+},{"../../modules/$":5}],5:[function(require,module,exports){
+var $Object = Object;
+module.exports = {
+  create:     $Object.create,
+  getProto:   $Object.getPrototypeOf,
+  isEnum:     {}.propertyIsEnumerable,
+  getDesc:    $Object.getOwnPropertyDescriptor,
+  setDesc:    $Object.defineProperty,
+  setDescs:   $Object.defineProperties,
+  getKeys:    $Object.keys,
+  getNames:   $Object.getOwnPropertyNames,
+  getSymbols: $Object.getOwnPropertySymbols,
+  each:       [].forEach
+};
+},{}],6:[function(require,module,exports){
+'use strict';
+
+var _createClass = require('babel-runtime/helpers/create-class')['default'];
+
+var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+
+if (!window.altspace) {
+    window.altspace = {};
+}
+if (!window.altspace.utilities) {
+    window.altspace.utilities = {};
+}
+if (!window.altspace.utilities.shims) {
+    window.altspace.utilities.shims = {};
+}
+
+var OBJMTLLoader = (function () {
+    function OBJMTLLoader() {
+        _classCallCheck(this, OBJMTLLoader);
+    }
+
+    _createClass(OBJMTLLoader, [{
+        key: 'load',
+        value: function load(objFile, mtlFile, callback) {
+            var mtlLoader = new THREE.MTLLoader();
+            var baseUrl = mtlFile.split('/').slice(0, -1).join('/');
+            mtlLoader.setBaseUrl(baseUrl + '/');
+            mtlLoader.load(mtlFile, function (materials) {
+                var objLoader = new THREE.OBJLoader();
+                objLoader.setMaterials(materials);
+                objLoader.load(objFile, callback);
+            });
+        }
+    }]);
+
+    return OBJMTLLoader;
+})();
+
+window.altspace.utilities.shims.OBJMTLLoader = OBJMTLLoader;
+},{"babel-runtime/helpers/class-call-check":2,"babel-runtime/helpers/create-class":3}]},{},[6]);
+
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (global){
+/**
+ * lodash 3.0.1 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+
+/** Used to determine if values are of the language type `Object`. */
+var objectTypes = {
+  'function': true,
+  'object': true
+};
+
+/** Detect free variable `exports`. */
+var freeExports = (objectTypes[typeof exports] && exports && !exports.nodeType)
+  ? exports
+  : undefined;
+
+/** Detect free variable `module`. */
+var freeModule = (objectTypes[typeof module] && module && !module.nodeType)
+  ? module
+  : undefined;
+
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = checkGlobal(freeExports && freeModule && typeof global == 'object' && global);
+
+/** Detect free variable `self`. */
+var freeSelf = checkGlobal(objectTypes[typeof self] && self);
+
+/** Detect free variable `window`. */
+var freeWindow = checkGlobal(objectTypes[typeof window] && window);
+
+/** Detect `this` as the global object. */
+var thisGlobal = checkGlobal(objectTypes[typeof this] && this);
+
+/**
+ * Used as a reference to the global object.
+ *
+ * The `this` value is used if it's the global object to avoid Greasemonkey's
+ * restricted `window` object, otherwise the `window` object is used.
+ */
+var root = freeGlobal ||
+  ((freeWindow !== (thisGlobal && thisGlobal.window)) && freeWindow) ||
+    freeSelf || thisGlobal || Function('return this')();
+
+/**
+ * Checks if `value` is a global object.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {null|Object} Returns `value` if it's a global object, else `null`.
+ */
+function checkGlobal(value) {
+  return (value && value.Object === Object) ? value : null;
+}
+
+module.exports = root;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],2:[function(require,module,exports){
+(function (global){
+/**
+ * lodash 4.1.2 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright jQuery Foundation and other contributors <https://jquery.org/>
+ * Released under MIT license <https://lodash.com/license>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ */
+
+/** Used as the size to enable large array optimizations. */
+var LARGE_ARRAY_SIZE = 200;
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/** `Object#toString` result references. */
+var funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]';
+
+/** Used to match `RegExp` [syntax characters](http://ecma-international.org/ecma-262/6.0/#sec-patterns). */
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+/** Used to detect host constructors (Safari). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+/** Used to determine if values are of the language type `Object`. */
+var objectTypes = {
+  'function': true,
+  'object': true
+};
+
+/** Detect free variable `exports`. */
+var freeExports = (objectTypes[typeof exports] && exports && !exports.nodeType)
+  ? exports
+  : undefined;
+
+/** Detect free variable `module`. */
+var freeModule = (objectTypes[typeof module] && module && !module.nodeType)
+  ? module
+  : undefined;
+
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = checkGlobal(freeExports && freeModule && typeof global == 'object' && global);
+
+/** Detect free variable `self`. */
+var freeSelf = checkGlobal(objectTypes[typeof self] && self);
+
+/** Detect free variable `window`. */
+var freeWindow = checkGlobal(objectTypes[typeof window] && window);
+
+/** Detect `this` as the global object. */
+var thisGlobal = checkGlobal(objectTypes[typeof this] && this);
+
+/**
+ * Used as a reference to the global object.
+ *
+ * The `this` value is used if it's the global object to avoid Greasemonkey's
+ * restricted `window` object, otherwise the `window` object is used.
+ */
+var root = freeGlobal ||
+  ((freeWindow !== (thisGlobal && thisGlobal.window)) && freeWindow) ||
+    freeSelf || thisGlobal || Function('return this')();
+
+/**
+ * Checks if `value` is a global object.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {null|Object} Returns `value` if it's a global object, else `null`.
+ */
+function checkGlobal(value) {
+  return (value && value.Object === Object) ? value : null;
+}
+
+/**
+ * Checks if `value` is a host object in IE < 9.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
+ */
+function isHostObject(value) {
+  // Many host objects are `Object` objects that can coerce to strings
+  // despite having improperly defined `toString` methods.
+  var result = false;
+  if (value != null && typeof value.toString != 'function') {
+    try {
+      result = !!(value + '');
+    } catch (e) {}
+  }
+  return result;
+}
+
+/** Used for built-in method references. */
+var arrayProto = Array.prototype,
+    objectProto = Object.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = Function.prototype.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objectToString = objectProto.toString;
+
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
+
+/** Built-in value references. */
+var splice = arrayProto.splice;
+
+/* Built-in method references that are verified to be native. */
+var Map = getNative(root, 'Map'),
+    nativeCreate = getNative(Object, 'create');
+
+/**
+ * Creates an hash object.
+ *
+ * @private
+ * @constructor
+ * @returns {Object} Returns the new hash object.
+ */
+function Hash() {}
+
+/**
+ * Removes `key` and its value from the hash.
+ *
+ * @private
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function hashDelete(hash, key) {
+  return hashHas(hash, key) && delete hash[key];
+}
+
+/**
+ * Gets the hash value for `key`.
+ *
+ * @private
+ * @param {Object} hash The hash to query.
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function hashGet(hash, key) {
+  if (nativeCreate) {
+    var result = hash[key];
+    return result === HASH_UNDEFINED ? undefined : result;
+  }
+  return hasOwnProperty.call(hash, key) ? hash[key] : undefined;
+}
+
+/**
+ * Checks if a hash value for `key` exists.
+ *
+ * @private
+ * @param {Object} hash The hash to query.
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function hashHas(hash, key) {
+  return nativeCreate ? hash[key] !== undefined : hasOwnProperty.call(hash, key);
+}
+
+/**
+ * Sets the hash `key` to `value`.
+ *
+ * @private
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ */
+function hashSet(hash, key, value) {
+  hash[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+}
+
+// Avoid inheriting from `Object.prototype` when possible.
+Hash.prototype = nativeCreate ? nativeCreate(null) : objectProto;
+
+/**
+ * Creates a map cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [values] The values to cache.
+ */
+function MapCache(values) {
+  var index = -1,
+      length = values ? values.length : 0;
+
+  this.clear();
+  while (++index < length) {
+    var entry = values[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+/**
+ * Removes all key-value entries from the map.
+ *
+ * @private
+ * @name clear
+ * @memberOf MapCache
+ */
+function mapClear() {
+  this.__data__ = {
+    'hash': new Hash,
+    'map': Map ? new Map : [],
+    'string': new Hash
+  };
+}
+
+/**
+ * Removes `key` and its value from the map.
+ *
+ * @private
+ * @name delete
+ * @memberOf MapCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function mapDelete(key) {
+  var data = this.__data__;
+  if (isKeyable(key)) {
+    return hashDelete(typeof key == 'string' ? data.string : data.hash, key);
+  }
+  return Map ? data.map['delete'](key) : assocDelete(data.map, key);
+}
+
+/**
+ * Gets the map value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf MapCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function mapGet(key) {
+  var data = this.__data__;
+  if (isKeyable(key)) {
+    return hashGet(typeof key == 'string' ? data.string : data.hash, key);
+  }
+  return Map ? data.map.get(key) : assocGet(data.map, key);
+}
+
+/**
+ * Checks if a map value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf MapCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function mapHas(key) {
+  var data = this.__data__;
+  if (isKeyable(key)) {
+    return hashHas(typeof key == 'string' ? data.string : data.hash, key);
+  }
+  return Map ? data.map.has(key) : assocHas(data.map, key);
+}
+
+/**
+ * Sets the map `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf MapCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the map cache instance.
+ */
+function mapSet(key, value) {
+  var data = this.__data__;
+  if (isKeyable(key)) {
+    hashSet(typeof key == 'string' ? data.string : data.hash, key, value);
+  } else if (Map) {
+    data.map.set(key, value);
+  } else {
+    assocSet(data.map, key, value);
+  }
+  return this;
+}
+
+// Add methods to `MapCache`.
+MapCache.prototype.clear = mapClear;
+MapCache.prototype['delete'] = mapDelete;
+MapCache.prototype.get = mapGet;
+MapCache.prototype.has = mapHas;
+MapCache.prototype.set = mapSet;
+
+/**
+ * Creates a stack cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [values] The values to cache.
+ */
+function Stack(values) {
+  var index = -1,
+      length = values ? values.length : 0;
+
+  this.clear();
+  while (++index < length) {
+    var entry = values[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+/**
+ * Removes all key-value entries from the stack.
+ *
+ * @private
+ * @name clear
+ * @memberOf Stack
+ */
+function stackClear() {
+  this.__data__ = { 'array': [], 'map': null };
+}
+
+/**
+ * Removes `key` and its value from the stack.
+ *
+ * @private
+ * @name delete
+ * @memberOf Stack
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function stackDelete(key) {
+  var data = this.__data__,
+      array = data.array;
+
+  return array ? assocDelete(array, key) : data.map['delete'](key);
+}
+
+/**
+ * Gets the stack value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Stack
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function stackGet(key) {
+  var data = this.__data__,
+      array = data.array;
+
+  return array ? assocGet(array, key) : data.map.get(key);
+}
+
+/**
+ * Checks if a stack value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Stack
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function stackHas(key) {
+  var data = this.__data__,
+      array = data.array;
+
+  return array ? assocHas(array, key) : data.map.has(key);
+}
+
+/**
+ * Sets the stack `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Stack
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the stack cache instance.
+ */
+function stackSet(key, value) {
+  var data = this.__data__,
+      array = data.array;
+
+  if (array) {
+    if (array.length < (LARGE_ARRAY_SIZE - 1)) {
+      assocSet(array, key, value);
+    } else {
+      data.array = null;
+      data.map = new MapCache(array);
+    }
+  }
+  var map = data.map;
+  if (map) {
+    map.set(key, value);
+  }
+  return this;
+}
+
+// Add methods to `Stack`.
+Stack.prototype.clear = stackClear;
+Stack.prototype['delete'] = stackDelete;
+Stack.prototype.get = stackGet;
+Stack.prototype.has = stackHas;
+Stack.prototype.set = stackSet;
+
+/**
+ * Removes `key` and its value from the associative array.
+ *
+ * @private
+ * @param {Array} array The array to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function assocDelete(array, key) {
+  var index = assocIndexOf(array, key);
+  if (index < 0) {
+    return false;
+  }
+  var lastIndex = array.length - 1;
+  if (index == lastIndex) {
+    array.pop();
+  } else {
+    splice.call(array, index, 1);
+  }
+  return true;
+}
+
+/**
+ * Gets the associative array value for `key`.
+ *
+ * @private
+ * @param {Array} array The array to query.
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function assocGet(array, key) {
+  var index = assocIndexOf(array, key);
+  return index < 0 ? undefined : array[index][1];
+}
+
+/**
+ * Checks if an associative array value for `key` exists.
+ *
+ * @private
+ * @param {Array} array The array to query.
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function assocHas(array, key) {
+  return assocIndexOf(array, key) > -1;
+}
+
+/**
+ * Gets the index at which the `key` is found in `array` of key-value pairs.
+ *
+ * @private
+ * @param {Array} array The array to search.
+ * @param {*} key The key to search for.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function assocIndexOf(array, key) {
+  var length = array.length;
+  while (length--) {
+    if (eq(array[length][0], key)) {
+      return length;
+    }
+  }
+  return -1;
+}
+
+/**
+ * Sets the associative array `key` to `value`.
+ *
+ * @private
+ * @param {Array} array The array to modify.
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ */
+function assocSet(array, key, value) {
+  var index = assocIndexOf(array, key);
+  if (index < 0) {
+    array.push([key, value]);
+  } else {
+    array[index][1] = value;
+  }
+}
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = object[key];
+  return isNative(value) ? value : undefined;
+}
+
+/**
+ * Checks if `value` is suitable for use as unique object key.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+ */
+function isKeyable(value) {
+  var type = typeof value;
+  return type == 'number' || type == 'boolean' ||
+    (type == 'string' && value != '__proto__') || value == null;
+}
+
+/**
+ * Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'user': 'fred' };
+ * var other = { 'user': 'fred' };
+ *
+ * _.eq(object, object);
+ * // => true
+ *
+ * _.eq(object, other);
+ * // => false
+ *
+ * _.eq('a', 'a');
+ * // => true
+ *
+ * _.eq('a', Object('a'));
+ * // => false
+ *
+ * _.eq(NaN, NaN);
+ * // => true
+ */
+function eq(value, other) {
+  return value === other || (value !== value && other !== other);
+}
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 8 which returns 'object' for typed array and weak map constructors,
+  // and PhantomJS 1.9 which returns 'function' for `NodeList` instances.
+  var tag = isObject(value) ? objectToString.call(value) : '';
+  return tag == funcTag || tag == genTag;
+}
+
+/**
+ * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+ * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return !!value && typeof value == 'object';
+}
+
+/**
+ * Checks if `value` is a native function.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ * @example
+ *
+ * _.isNative(Array.prototype.push);
+ * // => true
+ *
+ * _.isNative(_);
+ * // => false
+ */
+function isNative(value) {
+  if (value == null) {
+    return false;
+  }
+  if (isFunction(value)) {
+    return reIsNative.test(funcToString.call(value));
+  }
+  return isObjectLike(value) &&
+    (isHostObject(value) ? reIsNative : reIsHostCtor).test(value);
+}
+
+module.exports = Stack;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],3:[function(require,module,exports){
+/**
+ * lodash 4.1.3 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright jQuery Foundation and other contributors <https://jquery.org/>
+ * Released under MIT license <https://lodash.com/license>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ */
+var Stack = require('lodash._stack'),
+    keys = require('lodash.keys'),
+    root = require('lodash._root');
+
+/** Used to compose bitmasks for comparison styles. */
+var UNORDERED_COMPARE_FLAG = 1,
+    PARTIAL_COMPARE_FLAG = 2;
+
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    arrayTag = '[object Array]',
+    boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    objectTag = '[object Object]',
+    promiseTag = '[object Promise]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    symbolTag = '[object Symbol]',
+    weakMapTag = '[object WeakMap]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]',
+    float32Tag = '[object Float32Array]',
+    float64Tag = '[object Float64Array]',
+    int8Tag = '[object Int8Array]',
+    int16Tag = '[object Int16Array]',
+    int32Tag = '[object Int32Array]',
+    uint8Tag = '[object Uint8Array]',
+    uint8ClampedTag = '[object Uint8ClampedArray]',
+    uint16Tag = '[object Uint16Array]',
+    uint32Tag = '[object Uint32Array]';
+
+/** Used to match `RegExp` [syntax characters](http://ecma-international.org/ecma-262/6.0/#sec-patterns). */
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+/** Used to detect host constructors (Safari). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+/** Used to identify `toStringTag` values of typed arrays. */
+var typedArrayTags = {};
+typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+typedArrayTags[uint32Tag] = true;
+typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
+typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
+typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
+typedArrayTags[errorTag] = typedArrayTags[funcTag] =
+typedArrayTags[mapTag] = typedArrayTags[numberTag] =
+typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
+typedArrayTags[setTag] = typedArrayTags[stringTag] =
+typedArrayTags[weakMapTag] = false;
+
+/**
+ * A specialized version of `_.some` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} array The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {boolean} Returns `true` if any element passes the predicate check,
+ *  else `false`.
+ */
+function arraySome(array, predicate) {
+  var index = -1,
+      length = array.length;
+
+  while (++index < length) {
+    if (predicate(array[index], index, array)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Checks if `value` is a host object in IE < 9.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
+ */
+function isHostObject(value) {
+  // Many host objects are `Object` objects that can coerce to strings
+  // despite having improperly defined `toString` methods.
+  var result = false;
+  if (value != null && typeof value.toString != 'function') {
+    try {
+      result = !!(value + '');
+    } catch (e) {}
+  }
+  return result;
+}
+
+/**
+ * Converts `map` to an array.
+ *
+ * @private
+ * @param {Object} map The map to convert.
+ * @returns {Array} Returns the converted array.
+ */
+function mapToArray(map) {
+  var index = -1,
+      result = Array(map.size);
+
+  map.forEach(function(value, key) {
+    result[++index] = [key, value];
+  });
+  return result;
+}
+
+/**
+ * Converts `set` to an array.
+ *
+ * @private
+ * @param {Object} set The set to convert.
+ * @returns {Array} Returns the converted array.
+ */
+function setToArray(set) {
+  var index = -1,
+      result = Array(set.size);
+
+  set.forEach(function(value) {
+    result[++index] = value;
+  });
+  return result;
+}
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = Function.prototype.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objectToString = objectProto.toString;
+
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
+
+/** Built-in value references. */
+var Symbol = root.Symbol,
+    Uint8Array = root.Uint8Array;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetPrototype = Object.getPrototypeOf;
+
+/* Built-in method references that are verified to be native. */
+var DataView = getNative(root, 'DataView'),
+    Map = getNative(root, 'Map'),
+    Promise = getNative(root, 'Promise'),
+    Set = getNative(root, 'Set'),
+    WeakMap = getNative(root, 'WeakMap');
+
+/** Used to detect maps, sets, and weakmaps. */
+var dataViewCtorString = DataView ? (DataView + '') : '',
+    mapCtorString = Map ? funcToString.call(Map) : '',
+    promiseCtorString = Promise ? funcToString.call(Promise) : '',
+    setCtorString = Set ? funcToString.call(Set) : '',
+    weakMapCtorString = WeakMap ? funcToString.call(WeakMap) : '';
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
+
+/**
+ * The base implementation of `_.has` without support for deep paths.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} key The key to check.
+ * @returns {boolean} Returns `true` if `key` exists, else `false`.
+ */
+function baseHas(object, key) {
+  // Avoid a bug in IE 10-11 where objects with a [[Prototype]] of `null`,
+  // that are composed entirely of index properties, return `false` for
+  // `hasOwnProperty` checks of them.
+  return hasOwnProperty.call(object, key) ||
+    (typeof object == 'object' && key in object && getPrototype(object) === null);
+}
+
+/**
+ * The base implementation of `_.isEqual` which supports partial comparisons
+ * and tracks traversed objects.
+ *
+ * @private
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @param {boolean} [bitmask] The bitmask of comparison flags.
+ *  The bitmask may be composed of the following flags:
+ *     1 - Unordered comparison
+ *     2 - Partial comparison
+ * @param {Object} [stack] Tracks traversed `value` and `other` objects.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ */
+function baseIsEqual(value, other, customizer, bitmask, stack) {
+  if (value === other) {
+    return true;
+  }
+  if (value == null || other == null || (!isObject(value) && !isObjectLike(other))) {
+    return value !== value && other !== other;
+  }
+  return baseIsEqualDeep(value, other, baseIsEqual, customizer, bitmask, stack);
+}
+
+/**
+ * A specialized version of `baseIsEqual` for arrays and objects which performs
+ * deep comparisons and tracks traversed objects enabling objects with circular
+ * references to be compared.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual`
+ *  for more details.
+ * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function baseIsEqualDeep(object, other, equalFunc, customizer, bitmask, stack) {
+  var objIsArr = isArray(object),
+      othIsArr = isArray(other),
+      objTag = arrayTag,
+      othTag = arrayTag;
+
+  if (!objIsArr) {
+    objTag = getTag(object);
+    objTag = objTag == argsTag ? objectTag : objTag;
+  }
+  if (!othIsArr) {
+    othTag = getTag(other);
+    othTag = othTag == argsTag ? objectTag : othTag;
+  }
+  var objIsObj = objTag == objectTag && !isHostObject(object),
+      othIsObj = othTag == objectTag && !isHostObject(other),
+      isSameTag = objTag == othTag;
+
+  if (isSameTag && !objIsObj) {
+    stack || (stack = new Stack);
+    return (objIsArr || isTypedArray(object))
+      ? equalArrays(object, other, equalFunc, customizer, bitmask, stack)
+      : equalByTag(object, other, objTag, equalFunc, customizer, bitmask, stack);
+  }
+  if (!(bitmask & PARTIAL_COMPARE_FLAG)) {
+    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
+        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
+
+    if (objIsWrapped || othIsWrapped) {
+      var objUnwrapped = objIsWrapped ? object.value() : object,
+          othUnwrapped = othIsWrapped ? other.value() : other;
+
+      stack || (stack = new Stack);
+      return equalFunc(objUnwrapped, othUnwrapped, customizer, bitmask, stack);
+    }
+  }
+  if (!isSameTag) {
+    return false;
+  }
+  stack || (stack = new Stack);
+  return equalObjects(object, other, equalFunc, customizer, bitmask, stack);
+}
+
+/**
+ * A specialized version of `baseIsEqualDeep` for arrays with support for
+ * partial deep comparisons.
+ *
+ * @private
+ * @param {Array} array The array to compare.
+ * @param {Array} other The other array to compare.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual`
+ *  for more details.
+ * @param {Object} stack Tracks traversed `array` and `other` objects.
+ * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
+ */
+function equalArrays(array, other, equalFunc, customizer, bitmask, stack) {
+  var index = -1,
+      isPartial = bitmask & PARTIAL_COMPARE_FLAG,
+      isUnordered = bitmask & UNORDERED_COMPARE_FLAG,
+      arrLength = array.length,
+      othLength = other.length;
+
+  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+    return false;
+  }
+  // Assume cyclic values are equal.
+  var stacked = stack.get(array);
+  if (stacked) {
+    return stacked == other;
+  }
+  var result = true;
+  stack.set(array, other);
+
+  // Ignore non-index properties.
+  while (++index < arrLength) {
+    var arrValue = array[index],
+        othValue = other[index];
+
+    if (customizer) {
+      var compared = isPartial
+        ? customizer(othValue, arrValue, index, other, array, stack)
+        : customizer(arrValue, othValue, index, array, other, stack);
+    }
+    if (compared !== undefined) {
+      if (compared) {
+        continue;
+      }
+      result = false;
+      break;
+    }
+    // Recursively compare arrays (susceptible to call stack limits).
+    if (isUnordered) {
+      if (!arraySome(other, function(othValue) {
+            return arrValue === othValue ||
+              equalFunc(arrValue, othValue, customizer, bitmask, stack);
+          })) {
+        result = false;
+        break;
+      }
+    } else if (!(
+          arrValue === othValue ||
+            equalFunc(arrValue, othValue, customizer, bitmask, stack)
+        )) {
+      result = false;
+      break;
+    }
+  }
+  stack['delete'](array);
+  return result;
+}
+
+/**
+ * A specialized version of `baseIsEqualDeep` for comparing objects of
+ * the same `toStringTag`.
+ *
+ * **Note:** This function only supports comparing values with tags of
+ * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {string} tag The `toStringTag` of the objects to compare.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual`
+ *  for more details.
+ * @param {Object} stack Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function equalByTag(object, other, tag, equalFunc, customizer, bitmask, stack) {
+  switch (tag) {
+    case dataViewTag:
+      if ((object.byteLength != other.byteLength) ||
+          (object.byteOffset != other.byteOffset)) {
+        return false;
+      }
+      object = object.buffer;
+      other = other.buffer;
+
+    case arrayBufferTag:
+      if ((object.byteLength != other.byteLength) ||
+          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
+        return false;
+      }
+      return true;
+
+    case boolTag:
+    case dateTag:
+      // Coerce dates and booleans to numbers, dates to milliseconds and
+      // booleans to `1` or `0` treating invalid dates coerced to `NaN` as
+      // not equal.
+      return +object == +other;
+
+    case errorTag:
+      return object.name == other.name && object.message == other.message;
+
+    case numberTag:
+      // Treat `NaN` vs. `NaN` as equal.
+      return (object != +object) ? other != +other : object == +other;
+
+    case regexpTag:
+    case stringTag:
+      // Coerce regexes to strings and treat strings, primitives and objects,
+      // as equal. See https://es5.github.io/#x15.10.6.4 for more details.
+      return object == (other + '');
+
+    case mapTag:
+      var convert = mapToArray;
+
+    case setTag:
+      var isPartial = bitmask & PARTIAL_COMPARE_FLAG;
+      convert || (convert = setToArray);
+
+      if (object.size != other.size && !isPartial) {
+        return false;
+      }
+      // Assume cyclic values are equal.
+      var stacked = stack.get(object);
+      if (stacked) {
+        return stacked == other;
+      }
+      bitmask |= UNORDERED_COMPARE_FLAG;
+      stack.set(object, other);
+
+      // Recursively compare objects (susceptible to call stack limits).
+      return equalArrays(convert(object), convert(other), equalFunc, customizer, bitmask, stack);
+
+    case symbolTag:
+      if (symbolValueOf) {
+        return symbolValueOf.call(object) == symbolValueOf.call(other);
+      }
+  }
+  return false;
+}
+
+/**
+ * A specialized version of `baseIsEqualDeep` for objects with support for
+ * partial deep comparisons.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual`
+ *  for more details.
+ * @param {Object} stack Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function equalObjects(object, other, equalFunc, customizer, bitmask, stack) {
+  var isPartial = bitmask & PARTIAL_COMPARE_FLAG,
+      objProps = keys(object),
+      objLength = objProps.length,
+      othProps = keys(other),
+      othLength = othProps.length;
+
+  if (objLength != othLength && !isPartial) {
+    return false;
+  }
+  var index = objLength;
+  while (index--) {
+    var key = objProps[index];
+    if (!(isPartial ? key in other : baseHas(other, key))) {
+      return false;
+    }
+  }
+  // Assume cyclic values are equal.
+  var stacked = stack.get(object);
+  if (stacked) {
+    return stacked == other;
+  }
+  var result = true;
+  stack.set(object, other);
+
+  var skipCtor = isPartial;
+  while (++index < objLength) {
+    key = objProps[index];
+    var objValue = object[key],
+        othValue = other[key];
+
+    if (customizer) {
+      var compared = isPartial
+        ? customizer(othValue, objValue, key, other, object, stack)
+        : customizer(objValue, othValue, key, object, other, stack);
+    }
+    // Recursively compare objects (susceptible to call stack limits).
+    if (!(compared === undefined
+          ? (objValue === othValue || equalFunc(objValue, othValue, customizer, bitmask, stack))
+          : compared
+        )) {
+      result = false;
+      break;
+    }
+    skipCtor || (skipCtor = key == 'constructor');
+  }
+  if (result && !skipCtor) {
+    var objCtor = object.constructor,
+        othCtor = other.constructor;
+
+    // Non `Object` object instances with different constructors are not equal.
+    if (objCtor != othCtor &&
+        ('constructor' in object && 'constructor' in other) &&
+        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
+          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+      result = false;
+    }
+  }
+  stack['delete'](object);
+  return result;
+}
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = object[key];
+  return isNative(value) ? value : undefined;
+}
+
+/**
+ * Gets the `[[Prototype]]` of `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {null|Object} Returns the `[[Prototype]]`.
+ */
+function getPrototype(value) {
+  return nativeGetPrototype(Object(value));
+}
+
+/**
+ * Gets the `toStringTag` of `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function getTag(value) {
+  return objectToString.call(value);
+}
+
+// Fallback for data views, maps, sets, and weak maps in IE 11,
+// for data views in Edge, and promises in Node.js.
+if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
+    (Map && getTag(new Map) != mapTag) ||
+    (Promise && getTag(Promise.resolve()) != promiseTag) ||
+    (Set && getTag(new Set) != setTag) ||
+    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
+  getTag = function(value) {
+    var result = objectToString.call(value),
+        Ctor = result == objectTag ? value.constructor : null,
+        ctorString = typeof Ctor == 'function' ? funcToString.call(Ctor) : '';
+
+    if (ctorString) {
+      switch (ctorString) {
+        case dataViewCtorString: return dataViewTag;
+        case mapCtorString: return mapTag;
+        case promiseCtorString: return promiseTag;
+        case setCtorString: return setTag;
+        case weakMapCtorString: return weakMapTag;
+      }
+    }
+    return result;
+  };
+}
+
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @type {Function}
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+/**
+ * Performs a deep comparison between two values to determine if they are
+ * equivalent.
+ *
+ * **Note:** This method supports comparing arrays, array buffers, booleans,
+ * date objects, error objects, maps, numbers, `Object` objects, regexes,
+ * sets, strings, symbols, and typed arrays. `Object` objects are compared
+ * by their own, not inherited, enumerable properties. Functions and DOM
+ * nodes are **not** supported.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent,
+ *  else `false`.
+ * @example
+ *
+ * var object = { 'user': 'fred' };
+ * var other = { 'user': 'fred' };
+ *
+ * _.isEqual(object, other);
+ * // => true
+ *
+ * object === other;
+ * // => false
+ */
+function isEqual(value, other) {
+  return baseIsEqual(value, other);
+}
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 8 which returns 'object' for typed array and weak map constructors,
+  // and PhantomJS 1.9 which returns 'function' for `NodeList` instances.
+  var tag = isObject(value) ? objectToString.call(value) : '';
+  return tag == funcTag || tag == genTag;
+}
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This function is loosely based on
+ * [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length,
+ *  else `false`.
+ * @example
+ *
+ * _.isLength(3);
+ * // => true
+ *
+ * _.isLength(Number.MIN_VALUE);
+ * // => false
+ *
+ * _.isLength(Infinity);
+ * // => false
+ *
+ * _.isLength('3');
+ * // => false
+ */
+function isLength(value) {
+  return typeof value == 'number' &&
+    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+}
+
+/**
+ * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+ * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return !!value && typeof value == 'object';
+}
+
+/**
+ * Checks if `value` is a native function.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ * @example
+ *
+ * _.isNative(Array.prototype.push);
+ * // => true
+ *
+ * _.isNative(_);
+ * // => false
+ */
+function isNative(value) {
+  if (value == null) {
+    return false;
+  }
+  if (isFunction(value)) {
+    return reIsNative.test(funcToString.call(value));
+  }
+  return isObjectLike(value) &&
+    (isHostObject(value) ? reIsNative : reIsHostCtor).test(value);
+}
+
+/**
+ * Checks if `value` is classified as a typed array.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isTypedArray(new Uint8Array);
+ * // => true
+ *
+ * _.isTypedArray([]);
+ * // => false
+ */
+function isTypedArray(value) {
+  return isObjectLike(value) &&
+    isLength(value.length) && !!typedArrayTags[objectToString.call(value)];
+}
+
+module.exports = isEqual;
+
+},{"lodash._root":1,"lodash._stack":2,"lodash.keys":4}],4:[function(require,module,exports){
+/**
+ * lodash 4.0.6 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright jQuery Foundation and other contributors <https://jquery.org/>
+ * Released under MIT license <https://lodash.com/license>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ */
+
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    stringTag = '[object String]';
+
+/** Used to detect unsigned integer values. */
+var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+/**
+ * The base implementation of `_.times` without support for iteratee shorthands
+ * or max array length checks.
+ *
+ * @private
+ * @param {number} n The number of times to invoke `iteratee`.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the array of results.
+ */
+function baseTimes(n, iteratee) {
+  var index = -1,
+      result = Array(n);
+
+  while (++index < n) {
+    result[index] = iteratee(index);
+  }
+  return result;
+}
+
+/**
+ * Checks if `value` is a valid array-like index.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+ * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+ */
+function isIndex(value, length) {
+  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
+  length = length == null ? MAX_SAFE_INTEGER : length;
+  return value > -1 && value % 1 == 0 && value < length;
+}
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objectToString = objectProto.toString;
+
+/** Built-in value references. */
+var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetPrototype = Object.getPrototypeOf,
+    nativeKeys = Object.keys;
+
+/**
+ * The base implementation of `_.has` without support for deep paths.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} key The key to check.
+ * @returns {boolean} Returns `true` if `key` exists, else `false`.
+ */
+function baseHas(object, key) {
+  // Avoid a bug in IE 10-11 where objects with a [[Prototype]] of `null`,
+  // that are composed entirely of index properties, return `false` for
+  // `hasOwnProperty` checks of them.
+  return hasOwnProperty.call(object, key) ||
+    (typeof object == 'object' && key in object && getPrototype(object) === null);
+}
+
+/**
+ * The base implementation of `_.keys` which doesn't skip the constructor
+ * property of prototypes or treat sparse arrays as dense.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function baseKeys(object) {
+  return nativeKeys(Object(object));
+}
+
+/**
+ * The base implementation of `_.property` without support for deep paths.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @returns {Function} Returns the new function.
+ */
+function baseProperty(key) {
+  return function(object) {
+    return object == null ? undefined : object[key];
+  };
+}
+
+/**
+ * Gets the "length" property value of `object`.
+ *
+ * **Note:** This function is used to avoid a
+ * [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792) that affects
+ * Safari on at least iOS 8.1-8.3 ARM64.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {*} Returns the "length" value.
+ */
+var getLength = baseProperty('length');
+
+/**
+ * Gets the `[[Prototype]]` of `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {null|Object} Returns the `[[Prototype]]`.
+ */
+function getPrototype(value) {
+  return nativeGetPrototype(Object(value));
+}
+
+/**
+ * Creates an array of index keys for `object` values of arrays,
+ * `arguments` objects, and strings, otherwise `null` is returned.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array|null} Returns index keys, else `null`.
+ */
+function indexKeys(object) {
+  var length = object ? object.length : undefined;
+  if (isLength(length) &&
+      (isArray(object) || isString(object) || isArguments(object))) {
+    return baseTimes(length, String);
+  }
+  return null;
+}
+
+/**
+ * Checks if `value` is likely a prototype object.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+ */
+function isPrototype(value) {
+  var Ctor = value && value.constructor,
+      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
+
+  return value === proto;
+}
+
+/**
+ * Checks if `value` is likely an `arguments` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isArguments(function() { return arguments; }());
+ * // => true
+ *
+ * _.isArguments([1, 2, 3]);
+ * // => false
+ */
+function isArguments(value) {
+  // Safari 8.1 incorrectly makes `arguments.callee` enumerable in strict mode.
+  return isArrayLikeObject(value) && hasOwnProperty.call(value, 'callee') &&
+    (!propertyIsEnumerable.call(value, 'callee') || objectToString.call(value) == argsTag);
+}
+
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @type {Function}
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+/**
+ * Checks if `value` is array-like. A value is considered array-like if it's
+ * not a function and has a `value.length` that's an integer greater than or
+ * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+ * @example
+ *
+ * _.isArrayLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLike(document.body.children);
+ * // => true
+ *
+ * _.isArrayLike('abc');
+ * // => true
+ *
+ * _.isArrayLike(_.noop);
+ * // => false
+ */
+function isArrayLike(value) {
+  return value != null && isLength(getLength(value)) && !isFunction(value);
+}
+
+/**
+ * This method is like `_.isArrayLike` except that it also checks if `value`
+ * is an object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array-like object,
+ *  else `false`.
+ * @example
+ *
+ * _.isArrayLikeObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLikeObject(document.body.children);
+ * // => true
+ *
+ * _.isArrayLikeObject('abc');
+ * // => false
+ *
+ * _.isArrayLikeObject(_.noop);
+ * // => false
+ */
+function isArrayLikeObject(value) {
+  return isObjectLike(value) && isArrayLike(value);
+}
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 8 which returns 'object' for typed array and weak map constructors,
+  // and PhantomJS 1.9 which returns 'function' for `NodeList` instances.
+  var tag = isObject(value) ? objectToString.call(value) : '';
+  return tag == funcTag || tag == genTag;
+}
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This function is loosely based on
+ * [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length,
+ *  else `false`.
+ * @example
+ *
+ * _.isLength(3);
+ * // => true
+ *
+ * _.isLength(Number.MIN_VALUE);
+ * // => false
+ *
+ * _.isLength(Infinity);
+ * // => false
+ *
+ * _.isLength('3');
+ * // => false
+ */
+function isLength(value) {
+  return typeof value == 'number' &&
+    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+}
+
+/**
+ * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+ * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return !!value && typeof value == 'object';
+}
+
+/**
+ * Checks if `value` is classified as a `String` primitive or object.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isString('abc');
+ * // => true
+ *
+ * _.isString(1);
+ * // => false
+ */
+function isString(value) {
+  return typeof value == 'string' ||
+    (!isArray(value) && isObjectLike(value) && objectToString.call(value) == stringTag);
+}
+
+/**
+ * Creates an array of the own enumerable property names of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects. See the
+ * [ES spec](http://ecma-international.org/ecma-262/6.0/#sec-object.keys)
+ * for more details.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.keys(new Foo);
+ * // => ['a', 'b'] (iteration order is not guaranteed)
+ *
+ * _.keys('hi');
+ * // => ['0', '1']
+ */
+function keys(object) {
+  var isProto = isPrototype(object);
+  if (!(isProto || isArrayLike(object))) {
+    return baseKeys(object);
+  }
+  var indexes = indexKeys(object),
+      skipIndexes = !!indexes,
+      result = indexes || [],
+      length = result.length;
+
+  for (var key in object) {
+    if (baseHas(object, key) &&
+        !(skipIndexes && (key == 'length' || isIndex(key, length))) &&
+        !(isProto && key == 'constructor')) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = keys;
+
+},{}],5:[function(require,module,exports){
+window.altspace = window.altspace || {};
+window.altspace.utilities = window.altspace.utilities || {};
+window.altspace.utilities.behaviors = window.altspace.utilities.behaviors || {};
+
+/**
+ * The Object3DSync behavior syncs an object's transform and data.  
+ * **Note:** Object3DSync must be used in conjunction with 
+ * [SceneSync]{@link module:altspace/utilities/behaviors.SceneSync}
+ *
+ * @class Object3DSync
+ * @param {Object} [config]
+ * @param {Boolean} [config.position=false] Whether object's position should
+ *  be synced
+ * @param {Boolean} [config.rotation=false] Whether object's rotation should
+ *  be synced
+ * @param {Boolean} [config.scale=false] Whether object's scale should
+ *  be synced
+ * @param {Boolean} [config.auto=false] Whether the object should be synced 
+ *  automatically. Not currently recommended.
+ * @param {Boolean} [config.world=false] Whether world coordiantes should
+ *  be sent when synchronizing position and rotation, instead of the
+ *  transformation relative to the object's parent.  Use if synced object
+ *  is a child (e.g. of the tracking skeleton) only in the sender scene.
+ * @memberof module:altspace/utilities/behaviors
+ **/
+window.altspace.utilities.behaviors.Object3DSync = function (config){
+	config = config || {};
+	/*if (config.position === undefined) config.position = true;
+	if (config.rotation === undefined) config.rotation = true;
+	if (config.scale === undefined) config.scale = true; */
+	var object3d;
+	var scene;
+	var ref;
+	var key;
+	var dataRef;
+	var ownerRef;
+	var transformRef;
+
+	var sceneSync;
+	var isMine = false;
+
+	var position = new THREE.Vector3();
+	var quaternion = new THREE.Quaternion(); 
+	var scale = new THREE.Vector3();
+	var isEqual = require('lodash.isequal');
+
+
+	function link(objectRef, sS) {
+		ref = objectRef;
+		key = ref.key();
+		transformRef = ref.child('batch');
+		dataRef = ref.child('data');
+		ownerRef = ref.child('owner');
+		sceneSync = sS;
+	}
+
+	//TODO: lerp
+	function setupReceive() {
+		transformRef.on('value', function (snapshot) {
+
+			if (isMine) return;
+
+			var value = snapshot.val();
+			if (!value) return;
+
+			if (config.position) {
+				object3d.position.set(value.position.x, value.position.y, value.position.z);
+			}
+			if (config.rotation) {
+				object3d.quaternion.set(value.quaternion.x, value.quaternion.y, value.quaternion.z, value.quaternion.w);
+			}
+			if (config.scale) {
+				object3d.scale.set(value.scale.x, value.scale.y, value.scale.z);
+			}
+		});
+
+		ownerRef.on('value', function (snapshot) {
+			var newOwnerId = snapshot.val();
+
+			var gained = newOwnerId === sceneSync.clientId && !isMine;
+			if (gained) object3d.dispatchEvent({ type: 'ownershipgained' });
+
+			var lost = newOwnerId !== sceneSync.clientId && isMine;
+			if (lost) object3d.dispatchEvent({ type: 'ownershiplost' });
+			
+			isMine = newOwnerId === sceneSync.clientId;
+		});
+	}
+
+	function send() {
+		if (!isMine) return;
+
+		var transform = {};
+		if (config.world) {
+			object3d.updateMatrixWorld();//call before sending to avoid being a frame behind
+			object3d.matrixWorld.decompose(position, quaternion, scale); 
+		} else {
+			position = object3d.position;
+			quaternion = object3d.quaternion;
+			scale = object3d.scale;
+		}
+		if (config.position) {
+			transform.position = {
+				x: position.x,
+				y: position.y,
+				z: position.z
+			};
+		}
+		if (config.rotation) {
+			transform.quaternion = {
+				x: quaternion.x,
+				y: quaternion.y,
+				z: quaternion.z,
+				w: quaternion.w
+			};
+		}
+		if (config.scale) {
+			transform.scale = {
+				x: scale.x,
+				y: scale.y,
+				z: scale.z
+			};
+		}
+		if (Object.keys(transform).length > 0) {
+			if (isEqual(transform, this.lastTransform)) { return; }
+			transformRef.set(transform);
+			this.lastTransform = transform;
+		}
+	}
+
+	function awake(o, s) {
+		object3d = o;
+		scene = s;
+
+		setupReceive();
+	}
+
+	function update(deltaTime) {
+		
+	}
+
+	/**
+	 * Take ownership of this object. The client that instantiates an object owns it,
+	 * afterwards changes in ownership must be managed by the app. Manual modifications
+	 * to the Firebase ref's will not obey ownership status.
+	 * @instance
+	 * @method takeOwnership
+	 * @memberof module:altspace/utilities/behaviors.Object3DSync
+	 */
+	function takeOwnership() {
+		ownerRef.set(sceneSync.clientId);
+	}
+
+	var exports = { awake: awake, update: update, type: 'Object3DSync', link: link, autoSend: send, takeOwnership: takeOwnership };
+
+	/**
+	 * Firebase reference for the 'data' child location, can be used to store data related to
+	 * this object.
+	 * @readonly
+	 * @instance
+	 * @member {Firebase} dataRef
+	 * @memberof module:altspace/utilities/behaviors.Object3DSync
+	 */
+	Object.defineProperty(exports, 'dataRef', {
+		get: function () {
+			return dataRef;
+		}
+	});
+
+	/**
+	 * True if this object is currently owned by this client, false otherwise.
+	 * @readonly
+	 * @instance
+	 * @member {boolean} isMine
+	 * @memberof module:altspace/utilities/behaviors.Object3DSync
+	 */
+	Object.defineProperty(exports, 'isMine', {
+		get: function () {
+			return isMine;
+		}
+	});
+
+	return exports;
+};
+
+//manual modifications to the ref's will not obey ownership status.
+
+},{"lodash.isequal":3}]},{},[5]);
+
 /*!Please JS v0.4.2, Jordan Checkman 2014, Checkman.io, MIT License, Have fun.*/
 !function(e,r,a){"function"==typeof define&&define.amd?define([],a):"object"==typeof exports?module.exports=a():r[e]=a()}("Please",this,function(){"use strict";function e(){function e(e,r,a){var o=Math.random;return a instanceof l&&(o=a.random),Math.floor(o()*(r-e+1))+e}function r(e,r,a){var o=Math.random;return a instanceof l&&(o=a.random),o()*(r-e)+e}function a(e,r,a){return Math.max(r,Math.min(e,a))}function o(e,r){var a;switch(e){case"hex":for(a=0;a<r.length;a++)r[a]=F.HSV_to_HEX(r[a]);break;case"rgb":for(a=0;a<r.length;a++)r[a]=F.HSV_to_RGB(r[a]);break;case"rgb-string":for(a=0;a<r.length;a++){var o=F.HSV_to_RGB(r[a]);r[a]="rgb("+o.r+","+o.g+","+o.b+")"}break;case"hsv":break;default:console.error("Format not recognized.")}return r}function n(e){var r=F.HSV_to_RGB(e),a=(299*r.r+587*r.g+114*r.b)/1e3;return a>=128?"dark":"light"}function t(e){var r={};for(var a in e)e.hasOwnProperty(a)&&(r[a]=e[a]);return r}function l(e){function r(){o=(o+1)%256,n=(n+a[o])%256;var e=a[o];return a[o]=a[n],a[n]=e,a[(a[o]+a[n])%256]}for(var a=[],o=0,n=0,t=0;256>t;t++)a[t]=t;for(var l=0,F=0;256>l;l++){F=(F+a[l]+e.charCodeAt(l%e.length))%256;var s=a[l];a[l]=a[F],a[F]=s}this.random=function(){for(var e=0,a=0,o=1;8>e;e++)a+=r()*o,o*=256;return a/0x10000000000000000}}var F={},s={aliceblue:"F0F8FF",antiquewhite:"FAEBD7",aqua:"00FFFF",aquamarine:"7FFFD4",azure:"F0FFFF",beige:"F5F5DC",bisque:"FFE4C4",black:"000000",blanchedalmond:"FFEBCD",blue:"0000FF",blueviolet:"8A2BE2",brown:"A52A2A",burlywood:"DEB887",cadetblue:"5F9EA0",chartreuse:"7FFF00",chocolate:"D2691E",coral:"FF7F50",cornflowerblue:"6495ED",cornsilk:"FFF8DC",crimson:"DC143C",cyan:"00FFFF",darkblue:"00008B",darkcyan:"008B8B",darkgoldenrod:"B8860B",darkgray:"A9A9A9",darkgrey:"A9A9A9",darkgreen:"006400",darkkhaki:"BDB76B",darkmagenta:"8B008B",darkolivegreen:"556B2F",darkorange:"FF8C00",darkorchid:"9932CC",darkred:"8B0000",darksalmon:"E9967A",darkseagreen:"8FBC8F",darkslateblue:"483D8B",darkslategray:"2F4F4F",darkslategrey:"2F4F4F",darkturquoise:"00CED1",darkviolet:"9400D3",deeppink:"FF1493",deepskyblue:"00BFFF",dimgray:"696969",dimgrey:"696969",dodgerblue:"1E90FF",firebrick:"B22222",floralwhite:"FFFAF0",forestgreen:"228B22",fuchsia:"FF00FF",gainsboro:"DCDCDC",ghostwhite:"F8F8FF",gold:"FFD700",goldenrod:"DAA520",gray:"808080",grey:"808080",green:"008000",greenyellow:"ADFF2F",honeydew:"F0FFF0",hotpink:"FF69B4",indianred:"CD5C5C",indigo:"4B0082",ivory:"FFFFF0",khaki:"F0E68C",lavender:"E6E6FA",lavenderblush:"FFF0F5",lawngreen:"7CFC00",lemonchiffon:"FFFACD",lightblue:"ADD8E6",lightcoral:"F08080",lightcyan:"E0FFFF",lightgoldenrodyellow:"FAFAD2",lightgray:"D3D3D3",lightgrey:"D3D3D3",lightgreen:"90EE90",lightpink:"FFB6C1",lightsalmon:"FFA07A",lightseagreen:"20B2AA",lightskyblue:"87CEFA",lightslategray:"778899",lightslategrey:"778899",lightsteelblue:"B0C4DE",lightyellow:"FFFFE0",lime:"00FF00",limegreen:"32CD32",linen:"FAF0E6",magenta:"FF00FF",maroon:"800000",mediumaquamarine:"66CDAA",mediumblue:"0000CD",mediumorchid:"BA55D3",mediumpurple:"9370D8",mediumseagreen:"3CB371",mediumslateblue:"7B68EE",mediumspringgreen:"00FA9A",mediumturquoise:"48D1CC",mediumvioletred:"C71585",midnightblue:"191970",mintcream:"F5FFFA",mistyrose:"FFE4E1",moccasin:"FFE4B5",navajowhite:"FFDEAD",navy:"000080",oldlace:"FDF5E6",olive:"808000",olivedrab:"6B8E23",orange:"FFA500",orangered:"FF4500",orchid:"DA70D6",palegoldenrod:"EEE8AA",palegreen:"98FB98",paleturquoise:"AFEEEE",palevioletred:"D87093",papayawhip:"FFEFD5",peachpuff:"FFDAB9",peru:"CD853F",pink:"FFC0CB",plum:"DDA0DD",powderblue:"B0E0E6",purple:"800080",rebeccapurple:"663399",red:"FF0000",rosybrown:"BC8F8F",royalblue:"4169E1",saddlebrown:"8B4513",salmon:"FA8072",sandybrown:"F4A460",seagreen:"2E8B57",seashell:"FFF5EE",sienna:"A0522D",silver:"C0C0C0",skyblue:"87CEEB",slateblue:"6A5ACD",slategray:"708090",slategrey:"708090",snow:"FFFAFA",springgreen:"00FF7F",steelblue:"4682B4",tan:"D2B48C",teal:"008080",thistle:"D8BFD8",tomato:"FF6347",turquoise:"40E0D0",violet:"EE82EE",wheat:"F5DEB3",white:"FFFFFF",whitesmoke:"F5F5F5",yellow:"FFFF00",yellowgreen:"9ACD32"},i=.618033988749895,u={hue:null,saturation:null,value:null,base_color:"",greyscale:!1,grayscale:!1,golden:!0,full_random:!1,colors_returned:1,format:"hex",seed:null},c={scheme_type:"analogous",format:"hex"},h={golden:!1,format:"hex"};return F.NAME_to_HEX=function(e){return e=e.toLowerCase(),e in s?s[e]:(console.error("Color name not recognized."),void 0)},F.NAME_to_RGB=function(e){return F.HEX_to_RGB(F.NAME_to_HEX(e))},F.NAME_to_HSV=function(e){return F.HEX_to_HSV(F.NAME_to_HEX(e))},F.HEX_to_RGB=function(e){var r=/^#?([a-f\d])([a-f\d])([a-f\d])$/i;e=e.replace(r,function(e,r,a,o){return r+r+a+a+o+o});var a=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(e);return a?{r:parseInt(a[1],16),g:parseInt(a[2],16),b:parseInt(a[3],16)}:null},F.RGB_to_HEX=function(e){return"#"+((1<<24)+(e.r<<16)+(e.g<<8)+e.b).toString(16).slice(1)},F.HSV_to_RGB=function(e){var r,a,o,n,t,l,F,s,i=e.h,u=e.s,c=e.v;if(0===u)return{r:c,g:c,b:c};switch(i/=60,n=Math.floor(i),t=i-n,l=c*(1-u),F=c*(1-u*t),s=c*(1-u*(1-t)),n){case 0:r=c,a=s,o=l;break;case 1:r=F,a=c,o=l;break;case 2:r=l,a=c,o=s;break;case 3:r=l,a=F,o=c;break;case 4:r=s,a=l,o=c;break;case 5:r=c,a=l,o=F}return{r:Math.floor(255*r),g:Math.floor(255*a),b:Math.floor(255*o)}},F.RGB_to_HSV=function(e){var r=e.r/255,a=e.g/255,o=e.b/255,n=0,t=0,l=0,F=Math.min(r,Math.min(a,o)),s=Math.max(r,Math.max(a,o));if(F===s)return l=F,{h:0,s:0,v:l};var i=r===F?a-o:o===F?r-a:o-r,u=r===F?3:o===F?1:5;return n=60*(u-i/(s-F)),t=(s-F)/s,l=s,{h:n,s:t,v:l}},F.HSV_to_HEX=function(e){return F.RGB_to_HEX(F.HSV_to_RGB(e))},F.HEX_to_HSV=function(e){return F.RGB_to_HSV(F.HEX_to_RGB(e))},F.make_scheme=function(e,r){function n(e){return{h:e.h,s:e.s,v:e.v}}var l,F,s,i,u,h=t(c);if(null!==r)for(var d in r)r.hasOwnProperty(d)&&(h[d]=r[d]);var g=[e];switch(h.scheme_type.toLowerCase()){case"monochromatic":case"mono":for(u=1;2>=u;u++)l=n(e),s=l.s+.1*u,s=a(s,0,1),i=l.v+.1*u,i=a(i,0,1),l.s=s,l.v=i,g.push(l);for(u=1;2>=u;u++)l=n(e),s=l.s-.1*u,s=a(s,0,1),i=l.v-.1*u,i=a(i,0,1),l.s=s,l.v=i,g.push(l);break;case"complementary":case"complement":case"comp":l=n(e),l.h=(l.h+180)%360,g.push(l);break;case"split-complementary":case"split-complement":case"split":l=n(e),l.h=(l.h+165)%360,g.push(l),l=n(e),l.h=Math.abs((l.h-165)%360),g.push(l);break;case"double-complementary":case"double-complement":case"double":l=n(e),l.h=(l.h+180)%360,g.push(l),l.h=(l.h+30)%360,F=n(l),g.push(l),l.h=(l.h+180)%360,g.push(F);break;case"analogous":case"ana":for(u=1;5>=u;u++)l=n(e),l.h=(l.h+20*u)%360,g.push(l);break;case"triadic":case"triad":case"tri":for(u=1;3>u;u++)l=n(e),l.h=(l.h+120*u)%360,g.push(l);break;default:console.error("Color scheme not recognized.")}return o(h.format.toLowerCase(),g),g},F.make_color=function(n){var s=[],c=t(u),h=null;if(null!==n)for(var d in n)n.hasOwnProperty(d)&&(c[d]=n[d]);var g=null;"string"==typeof c.seed&&(g=new l(c.seed)),c.base_color.length>0&&(h=c.base_color.match(/^#?([0-9a-f]{3})([0-9a-f]{3})?$/i)?F.HEX_to_HSV(c.base_color):F.NAME_to_HSV(c.base_color));for(var m=0;m<c.colors_returned;m++){var f,E,b,p=e(0,360,g);null!==h?(f=a(e(h.h-5,h.h+5,g),0,360),E=0===h.s?0:r(.4,.85,g),b=r(.4,.85,g),s.push({h:f,s:E,v:b})):(f=c.greyscale===!0||c.grayscale===!0?0:c.golden===!0?(p+p/i)%360:null===c.hue||c.full_random===!0?p:a(c.hue,0,360),E=c.greyscale===!0||c.grayscale===!0?0:c.full_random===!0?r(0,1,g):null===c.saturation?.4:a(c.saturation,0,1),b=c.full_random===!0?r(0,1,g):c.greyscale===!0||c.grayscale===!0?r(.15,.75,g):null===c.value?.75:a(c.value,0,1),s.push({h:f,s:E,v:b}))}return o(c.format.toLowerCase(),s),s},F.make_contrast=function(e,r){var l=t(h);if(null!==r)for(var s in r)r.hasOwnProperty(s)&&(l[s]=r[s]);var u,c,d=n(e);if(l.golden===!0)c=e.h*(1+i)%360;else{var g=F.make_scheme(e,{scheme_type:"complementary",format:"hsv"})[1];c=a(g.h-30,0,360)}var m;return"dark"===d?m=a(e.v-.25,0,1):"light"===d&&(m=a(e.v+.25,0,1)),u=[{h:c,s:e.s,v:m}],o(l.format.toLowerCase(),u),u[0]},F}return e()});
 /*!
@@ -492,15 +2805,22 @@ U.prototype.We=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);fg
 
 
 (function () {
-    //Cant use || as assigning the same value to an unwritable property would throw an error
-    if (!window.altspace) {
-        window.altspace = {};
-        window.altspace.inClient = false;
-    }
-    if (!window.altspace.utilities) {
-        window.altspace.utilities = {};
-    }
+	//Cant use || as assigning the same value to an unwritable property would throw an error
+	if (!window.altspace) {
+		window.altspace = {};
+		window.altspace.inClient = false;
+	}
+	if (!window.altspace.utilities) {
+		window.altspace.utilities = {};
+	}
+
+	// THREE is exposed locally by the UMD wrapper, but altspace-client.js
+	// requires it to be global so export it here, once we
+	if (!window.THREE) {
+		window.THREE = THREE
+	}
 }());
+
 /**
  * The Sync utility is currently based on Firebase. It provides a quick way 
  * to synchronize apps between users (even when they are running outside of 
@@ -514,83 +2834,240 @@ U.prototype.We=function(a,b){x("Firebase.resetPassword",2,2,arguments.length);fg
  * when working with the sync instance.
  * @module altspace/utilities/sync
  */
+altspace.utilities.sync = (function () {
+	var Firebase = window.Firebase;
+	var inAltspace = altspace && altspace.inClient;
+	var canonicalUrl = getCanonicalUrl();
 
-//TODO: Change name. kvSync?
-altspace.utilities.sync = (function() {
-    
-    var instance;
+	var instance;
 
-    function dashEscapeFirebaseKey(keyName) {
-        return encodeURIComponent(keyName).replace(/\./g, '%2E').replace(/%[A-Z0-9]{2}/g, '-');
-    }
+	function dashEscape(keyName) {
+		return keyName ? encodeURIComponent(keyName).replace(/\./g, '%2E').replace(/%[A-Z0-9]{2}/g, '-') : null;
+	}
 
-    function getCanonicalUrl() {
-        var canonicalElement = document.querySelector('link[rel=canonical]');
-        return canonicalElement ? canonicalElement.href : window.location.href;
-    }
+	function getCanonicalUrl() {
+		var canonicalElement = document.querySelector('link[rel=canonical]');
+		return canonicalElement ? canonicalElement.href : window.location.href;
+	}
 
-    function getInstance(params) {
-        var canonicalUrl = getCanonicalUrl();
-        var url = new Url();
+	function getInstance(params) {
+		console.warn('altspace.utilities.sync.getInstance has been deprecated, please use connect instead.');
+		return getInstanceRef(params);
+	}
 
-        params = params || {};
-        var appName = params.appId || '';
-        var instanceId = params.instanceId || url.query['altspace-sync-instance'];
-        var authorName = params.authorId || canonicalUrl;
+	function getInstanceRef(params) {
+		var canonicalUrl = getCanonicalUrl();
+		var url = new Url();
 
-        var appId = dashEscapeFirebaseKey(authorName) + ':' + dashEscapeFirebaseKey(appName);
+		params = params || {};
 
-        var firebaseApp = new Firebase('https://altspace-apps.firebaseio.com/apps/examples/').child(appId); //An example firebase to be used for testing. Data will be cleared periodically.
-        firebaseApp.child('lastUrl').set(canonicalUrl);
+		var instanceId = params.instanceId || url.query['altspace-sync-instance'];
+		var projectId = getProjectId(params.appId, params.authorId, canonicalUrl);
 
-        var firebaseInstance;
+		var firebaseApp = new Firebase('https://altspace-apps.firebaseio.com/apps/examples/').child(projectId); //An example firebase to be used for testing. Data will be cleared periodically.
+		firebaseApp.child('lastUrl').set(canonicalUrl);
 
-        if (instanceId) {
-            firebaseInstance = firebaseApp.child('instances').child(instanceId);
-        } else {
-            firebaseInstance = firebaseApp.child('instances').push();
-            instanceId = firebaseInstance.key();
-            url.query['altspace-sync-instance'] = instanceId;
-            window.location.href = url.toString();
-        }
-        instance = firebaseInstance;
-        return firebaseInstance;
-    }
+		var firebaseInstance;
 
-    function authenticate(callback){//TODO: Promise and document
-        var ref = instance || getInstance(params);
-        ref.authAnonymously(function(error, authData) {
-          if (error) {
-            console.error('Authetication Failed!', error);
-          } else {
-            callback(authData);
-          }
-        }, {remember: 'sessionOnly'});
-    }
+		if (instanceId) {
+			firebaseInstance = firebaseApp.child('instances').child(instanceId);
+		} else {
+			firebaseInstance = firebaseApp.child('instances').push();
+			instanceId = firebaseInstance.key();
+			url.query['altspace-sync-instance'] = instanceId;
+			window.location.href = url.toString();
+		}
+		instance = firebaseInstance;
+		return firebaseInstance;
+	}
 
-    /**
-     * Returns a firebase instance, just as if you had called new Firebase()  
-     *
-     * By using syncInstance.parent() you can store cross-instance data like high scores. Likewise you can store persistent user data at syncInstance.parent().child([userId).
-     * @method getInstance
-     * @param {Object} params
-     * @param {String} params.appId An identifier for your app.
-     * @param {String} [params.instanceId] An id for a particular instance of
-     *  your app. Leave this blank if you would like to have one automatically generated and appended as a query string.
-     * @param {String} [params.authorId] An identifier for the author of the
-     *  app.
-     * @return {Firebase}
-     * @memberof module:altspace/utilities/sync
-     * @example
-     *  var syncInstance = altspace.utilities.sync.getInstance({
-     *      // All sync instances with the same instance id will share 
-     *      // properties. 
-     *      instanceId: yourInstanceId, 
-     *      // This helps to prevent collisions.
-     *      authorId: yourAuthorId  
-     *  });
-     */
-    return { getInstance: getInstance, authenticate: authenticate };
+	function getProjectId(appId, authorId, canonicalUrl) {
+		return dashEscape(authorId || canonicalUrl) + ':' + dashEscape(appId || '');
+	}
+
+	function deprecatedAuthenticate(callback) {
+		console.warn('altspace.utilities.sync.authenticate has been depreciated, please use connect instead.');
+		var ref = instance || getInstance(params);
+		ref.authAnonymously(function(error, authData) {
+			if (error) {
+				console.error('Authetication Failed!', error);
+			} else {
+				callback(authData);
+			}
+		}, {remember: 'sessionOnly'});
+	}
+
+
+	function authenticate(ref) {
+		return new Promise(function(resolve, reject) {
+			ref.authAnonymously(function(error, authData) {
+				if (error) {
+					console.error('Authetication Failed!', error);
+					reject(error);
+				} else {
+					resolve(authData);
+				}
+			}, { remember: 'sessionOnly' });
+		});
+	}
+	
+	/**
+	 * Retreived
+	 * via [altspace.utilities.sync.connect]{@link module:altspace/utilities/sync#connect}.
+	 * @class module:altspace/utilities/sync~Connection
+	 * @memberof module:altspace/utilities/sync
+	 */
+
+	/**
+		* (In-client only) A Firebase reference for the current user (on a per app basis). This can be used for things like a persistent inventory or personal highscores.
+		* @instance
+		* @member {Firebase} user
+		* @memberof module:altspace/utilities/sync~Connection
+		*/
+
+	/**
+		* A Firebase reference to the current instance of the app. 
+		* This will change if the query paramater is removed through navigation, rebeaming, the space timing out, or other reasons. 
+		* This can be used as an input to SceneSync
+		* @instance
+		* @member {Firebase} instance
+		* @memberof module:altspace/utilities/sync~Connection
+		*/
+
+	/**
+		* (In-client only) A Firebase reference for the current space. Especially useful if multiple apps / instances need to communicate inside the space.
+		* @instance
+		* @member {Firebase} space
+		* @memberof module:altspace/utilities/sync~Connection
+		*/
+
+	/**
+		* A Firebase reference for the app. 
+		* This can be used for things like persistent high-scores, dynamic configuration, or inter-instance communication.
+		* @instance
+		* @member {Firebase} app
+		* @memberof module:altspace/utilities/sync~Connection
+		*/
+
+
+	/**
+	 * Connect to a sync session to obtain Firebase references that can be used for syncronization of real-time and persistent state.
+	 * Returns a promise that will fufill with a [Connection]{@link module:altspace/utilities/sync~Connection}.
+	 *
+	 * @method connect
+	 * @param {Object} config
+	 * @param {String} config.authorId A unique identifier for yourself or your organization
+	 * @param {String} config.appId The name of your app
+	 * @param {String} [config.baseRefUrl] Override the base reference. Set this to use your own Firebase.
+	 * @param {String} [config.instanceId] Override the instanceId. Can also be overriden using a query parameter.
+	 * @param {String} [config.spaceId] Override the spaceId. Can also be overriden using a query parameter.
+	 * @param {String} [config.userId] Override the userId. Can also be overriden using a query parameter.
+	 * @return {Promise}
+	 * @memberof module:altspace/utilities/sync
+	 **/
+	//todo clients
+	function connect(config) {
+		config = config || {};
+
+		var url = new Url();
+
+		// Our ref used for example apps. Data may be cleared periodically.
+		var baseRefUrl = config.baseRefUrl || 'https://altspace-apps.firebaseio.com/apps/examples/';
+		var baseRef = new Firebase(baseRefUrl);
+
+		// Gather query paramaters (some may only be used as testing overrides)
+		var instanceId = config.instanceId || url.query['altspace-sync-instance'];
+		var spaceId = config.spaceId || url.query['altspace-sync-space'];
+		var userId = config.userId || url.query['altspace-sync-user'];
+
+		if (!config.appId || !config.authorId) {
+			throw new Error('Both the appId and authorId must be provided to connect.');
+		}
+
+		var tasks = [authenticate(baseRef)];
+		if (inAltspace) {
+			if (!spaceId) tasks.unshift(altspace.getSpace());
+			if (!userId) tasks.unshift(altspace.getUser());
+		}
+
+		function getRefs() {
+			var refs = {};
+
+			var projectId = getProjectId(config.appId, config.authorId, canonicalUrl);
+			refs.app = baseRef.child(projectId).child('app');
+			refs.space = spaceId ? refs.app.child('spaces').child(spaceId) : null;
+			refs.user = userId ? refs.app.child('users').child(userId) : null;
+
+			var instancesRef = refs.app.child('instances');
+			if (instanceId) {
+				refs.instance = instancesRef.child(instanceId);
+			} else {
+				refs.instance = instancesRef.push();
+				instanceId = refs.instance.key();
+			}
+			return refs;
+		}
+
+		function updateUrl() {
+			if (!url.query['altspace-sync-instance']) {
+				url.query['altspace-sync-instance'] = instanceId;
+				window.location.href = url.toString();
+			}
+		}
+
+		return Promise.all(tasks).then(function (results) {
+			results.pop();//auth
+
+			if (inAltspace) {
+				if (!spaceId) spaceId = results.pop().sid;
+				if (!userId) userId = results.pop().userId;
+			}
+
+			spaceId = dashEscape(spaceId);
+			userId = dashEscape(userId);
+			instanceId = dashEscape(instanceId);
+
+			var connection = getRefs();
+
+			updateUrl();
+
+			return connection;
+		}).catch(function(error) {
+			console.error("Failed to connect.");
+			console.dir(error);
+		});
+	}
+
+
+	/**
+	 * Returns a firebase instance, just as if you had called new Firebase()  
+	 *
+	 * By using syncInstance.parent() you can store cross-instance data like high scores. Likewise you can store persistent user data at syncInstance.parent().child([userId).
+	 * @deprecated The connect function can do this and more! Please switch to using it instead. This function will be removed in the next major version
+	 * @method getInstance
+	 * @param {Object} params
+	 * @param {String} params.appId An identifier for your app.
+	 * @param {String} [params.instanceId] An id for a particular instance of
+	 *  your app. Leave this blank if you would like to have one automatically generated and appended as a query string.
+	 * @param {String} [params.authorId] An identifier for the author of the
+	 *  app.
+	 * @return {Firebase}
+	 * @memberof module:altspace/utilities/sync
+	 * @example
+	 *  var syncInstance = altspace.utilities.sync.getInstance({
+	 *      // All sync instances with the same instance id will share 
+	 *      // properties. 
+	 *      instanceId: yourInstanceId, 
+	 *      // This helps to prevent collisions.
+	 *      authorId: yourAuthorId  
+	 *  });
+	 */
+	return {
+		connect: connect,
+		getInstance: getInstance,
+		authenticate: deprecatedAuthenticate
+	};
+	
 }());
 
 /**
@@ -598,20 +3075,20 @@ altspace.utilities.sync = (function() {
  * @module altspace/utilities/codePen
  */
 altspace.utilities.codePen = (function () {
-    var exports = {};
+	var exports = {};
 
-    var Please = window.Please;
-    var Url = window.Url;
+	var Please = window.Please;
+	var Url = window.Url;
 
-    var name = 'VR CodePen';
-    var inTile = window.name && window.name.slice(0, 4) === 'pen-';
-    var inVR = !!window.altspace.inClient;
-    var inCodePen = !!location.href.match('codepen.io/');
+	var name = 'VR CodePen';
+	var inTile = window.name && window.name.slice(0, 4) === 'pen-';
+	var inVR = !!window.altspace.inClient;
+	var inCodePen = !!location.href.match('codepen.io/');
 
-    function printDebugInfo() {
-        console.log("In a tile: " + inTile);
-        console.log("In VR: " + inVR);
-    }
+	function printDebugInfo() {
+		console.log("In a tile: " + inTile);
+		console.log("In VR: " + inVR);
+	}
 
 	/**
 	 * Will stop code exection and post a message informing the user to 
@@ -619,54 +3096,54 @@ altspace.utilities.codePen = (function () {
 	 * @method ensureInVR
 	 * @memberof module:altspace/utilities/codePen
 	 */
-    function ensureInVR() {
-        if (inTile || !inVR) //inTile && inAltspace
-        {
-            var css = document.createElement("style");
-            css.type = "text/css";
-            css.innerHTML = "@import url(https://fonts.googleapis.com/css?family=Open+Sans:800);.altspace-info{text-align:center;font-family:'Open Sans',sans-serif;line-height:.5}.altspace-vr-notice{color:rgba(0,0,0,.7);font-size:5vw}.altspace-pen-name{font-size:7vw}";
-            document.head.appendChild(css);
+	function ensureInVR() {
+		if (inTile || !inVR) //inTile && inAltspace
+		{
+			var css = document.createElement("style");
+			css.type = "text/css";
+			css.innerHTML = "@import url(https://fonts.googleapis.com/css?family=Open+Sans:800);.altspace-info{text-align:center;font-family:'Open Sans',sans-serif;line-height:.5}.altspace-vr-notice{color:rgba(0,0,0,.7);font-size:5vw}.altspace-pen-name{font-size:7vw}";
+			document.head.appendChild(css);
 
-            document.body.style.background = Please.make_color({ seed: getPenId() });
+			document.body.style.background = Please.make_color({ seed: getPenId() });
 
-            var info = document.createElement("div");
-            info.className = "altspace-info";
-            document.body.appendChild(info);
+			var info = document.createElement("div");
+			info.className = "altspace-info";
+			document.body.appendChild(info);
 
-            var nameEl = document.createElement("span");
-            nameEl.className = "altspace-pen-name";
-            nameEl.innerHTML = '<p>' + name.toUpperCase() + '</p>';
-            info.appendChild(nameEl);
+			var nameEl = document.createElement("span");
+			nameEl.className = "altspace-pen-name";
+			nameEl.innerHTML = '<p>' + name.toUpperCase() + '</p>';
+			info.appendChild(nameEl);
 
-            if (inTile) {
-                var errorMsg = 'VR mode does not support preview tiles. Stopping code execution.';
-                console.log('ERROR: ' + errorMsg);
-                throw new Error(errorMsg);
-            }
+			if (inTile) {
+				var errorMsg = 'VR mode does not support preview tiles. Stopping code execution.';
+				console.log('ERROR: ' + errorMsg);
+				throw new Error(errorMsg);
+			}
 
-            if (!inVR) {
+			if (!inVR) {
 
-                var launchEl = document.createElement("span");
-                launchEl.className = "altspace-vr-notice";
-                launchEl.innerHTML = '<p>View</p>';
-                info.insertBefore(launchEl, nameEl);
+				var launchEl = document.createElement("span");
+				launchEl.className = "altspace-vr-notice";
+				launchEl.innerHTML = '<p>View</p>';
+				info.insertBefore(launchEl, nameEl);
 
-                var notice = document.createElement("span");
-                notice.className = "altspace-vr-notice";
-                notice.innerHTML = '<p>in <a href="http://altvr.com"> AltspaceVR </a></p>';
-                info.appendChild(notice);
+				var notice = document.createElement("span");
+				notice.className = "altspace-vr-notice";
+				notice.innerHTML = '<p>in <a href="http://altvr.com"> AltspaceVR </a></p>';
+				info.appendChild(notice);
 
 
-                var errorMsg = 'Not in VR mode. Stopping code execution.';
-                if (inTile) {
-                    console.log('ERROR: ' + errorMsg);//thrown error message not displayed in console when inTile, log it
-                }
-                throw new Error(errorMsg);
-            }
-            return;
+				var errorMsg = 'Not in VR mode. Stopping code execution.';
+				if (inTile) {
+					console.log('ERROR: ' + errorMsg);//thrown error message not displayed in console when inTile, log it
+				}
+				throw new Error(errorMsg);
+			}
+			return;
 
-        }
-    }
+		}
+	}
 
 	/**
 	 * Sets the name to be used by ensureInVR()  
@@ -674,15 +3151,15 @@ altspace.utilities.codePen = (function () {
 	 * @param {String} name
 	 * @memberof module:altspace/utilities/codePen
 	 */
-    function setName(n) {//TODO: A better method for this would be awesome
-        name = n;
-    }
+	function setName(n) {//TODO: A better method for this would be awesome
+		name = n;
+	}
 
-    function getParsedUrl() {
-        var canonicalElement = document.querySelector('link[rel=canonical]');
-        var fullUrl = canonicalElement ? canonicalElement.href : window.location.href;
-        return new Url(fullUrl);
-    }
+	function getParsedUrl() {
+		var canonicalElement = document.querySelector('link[rel=canonical]');
+		var fullUrl = canonicalElement ? canonicalElement.href : window.location.href;
+		return new Url(fullUrl);
+	}
 
 
 	/**
@@ -691,12 +3168,12 @@ altspace.utilities.codePen = (function () {
 	 * @return {String}
 	 * @memberof module:altspace/utilities/codePen
 	 */
-    function getPenId() {
-        var url = getParsedUrl();
-        var splitPath = url.path.split('/');
-        var id = splitPath[splitPath.length - 1];
-        return id;
-    }
+	function getPenId() {
+		var url = getParsedUrl();
+		var splitPath = url.path.split('/');
+		var id = splitPath[splitPath.length - 1];
+		return id;
+	}
 
 	/**
 	 * Returns the pen author ID, useful for setting the sync authorId.
@@ -704,24 +3181,24 @@ altspace.utilities.codePen = (function () {
 	 * @return {String}
 	 * @memberof module:altspace/utilities/codePen
 	 */
-    function getAuthorId() {
-        var url = getParsedUrl();
-        var splitPath = url.path.split('/');
-        var isTeam = splitPath[1] == 'team';
-        var id = isTeam ? 'team-' + splitPath[2] : splitPath[1];
-        return id;
-    }
+	function getAuthorId() {
+		var url = getParsedUrl();
+		var splitPath = url.path.split('/');
+		var isTeam = splitPath[1] == 'team';
+		var id = isTeam ? 'team-' + splitPath[2] : splitPath[1];
+		return id;
+	}
 
-    return {
-        inTile: inTile,
-        inVR: inVR,
-        inCodePen: inCodePen,
-        ensureInVR: ensureInVR,
-        setName: setName,
-        getPenId: getPenId,
-        getAuthorId: getAuthorId,
-        printDebugInfo: printDebugInfo
-    };
+	return {
+		inTile: inTile,
+		inVR: inVR,
+		inCodePen: inCodePen,
+		ensureInVR: ensureInVR,
+		setName: setName,
+		getPenId: getPenId,
+		getAuthorId: getAuthorId,
+		printDebugInfo: printDebugInfo
+	};
 }());
 
 window.altspace = window.altspace || {};
@@ -744,117 +3221,117 @@ window.altspace.utilities = window.altspace.utilities || {};
  * @memberof module:altspace/utilities
  */
 altspace.utilities.Simulation = function (config) {
-    config = config || {};
-    if (config.auto === undefined) config.auto = true;
+	config = config || {};
+	if (config.auto === undefined) config.auto = true;
 
-    var exports = {};
-    var scene = new THREE.Scene();
-    var renderer;
-    var camera;
+	var exports = {};
+	var scene = new THREE.Scene();
+	var renderer;
+	var camera;
 
-    setup();
+	setup();
 
-    function loop() {
-        window.requestAnimationFrame(loop);
+	function loop() {
+		window.requestAnimationFrame(loop);
 
-        if (scene.updateAllBehaviors)
-            scene.updateAllBehaviors();
+		if (scene.updateAllBehaviors)
+			scene.updateAllBehaviors();
 
-        renderer.render(scene, camera);
-    }
+		renderer.render(scene, camera);
+	}
 
-    function setup() {
-        function setupAltspace() {
-            renderer = altspace.getThreeJSRenderer();
-            camera = new THREE.PerspectiveCamera(); // TODO: change from shim to symbolic
-            altspace.getThreeJSTrackingSkeleton(function (s) {//TODO: this should have a non-promise version
-                var skeleton = s;
-                skeleton.getJoint('Eye').add(camera);// add our virtual camera to the center eye so that it looks normal to other behaviors
-            });
-        }
+	function setup() {
+		function setupAltspace() {
+			renderer = altspace.getThreeJSRenderer();
+			camera = new THREE.PerspectiveCamera(); // TODO: change from shim to symbolic
+			altspace.getThreeJSTrackingSkeleton(function (s) {//TODO: this should have a non-promise version
+				var skeleton = s;
+				skeleton.getJoint('Eye').add(camera);// add our virtual camera to the center eye so that it looks normal to other behaviors
+			});
+		}
 
-        function setupWebGL() {
-            renderer = new THREE.WebGLRenderer({antialias: true});
-            camera = new THREE.PerspectiveCamera();
-            camera.position.z = 500;
+		function setupWebGL() {
+			renderer = new THREE.WebGLRenderer({antialias: true});
+			camera = new THREE.PerspectiveCamera();
+			camera.position.z = 500;
 
-            var resizeRender = function () {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            };
-            document.addEventListener("DOMContentLoaded", function (event) {
-                document.body.style.margin = '0px';
-                document.body.style.overflow = 'hidden';
-                renderer.setClearColor('#035F72');
-                var container = document.createElement('div');
-                document.body.appendChild(container);
-                container.appendChild(renderer.domElement);
-            });
-            window.addEventListener('resize', resizeRender);
-            resizeRender();
-            camera.fov = 45;
-            camera.near = 1;
-            camera.far = 2000;
-            scene.add(camera);
-            scene.add(new THREE.AmbientLight('white'));
+			var resizeRender = function () {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize(window.innerWidth, window.innerHeight);
+			};
+			document.addEventListener("DOMContentLoaded", function (event) {
+				document.body.style.margin = '0px';
+				document.body.style.overflow = 'hidden';
+				renderer.setClearColor('#035F72');
+				var container = document.createElement('div');
+				document.body.appendChild(container);
+				container.appendChild(renderer.domElement);
+			});
+			window.addEventListener('resize', resizeRender);
+			resizeRender();
+			camera.fov = 45;
+			camera.near = 1;
+			camera.far = 2000;
+			scene.add(camera);
+			scene.add(new THREE.AmbientLight('white'));
 
-            var shouldShimCursor = altspace && altspace.utilities && altspace.utilities.shims && altspace.utilities.shims.cursor;
-            if (shouldShimCursor) altspace.utilities.shims.cursor.init(scene, camera);
-        }
+			var shouldShimCursor = altspace && altspace.utilities && altspace.utilities.shims && altspace.utilities.shims.cursor;
+			if (shouldShimCursor) altspace.utilities.shims.cursor.init(scene, camera);
+		}
 
-        if (altspace && altspace.inClient) {
-            setupAltspace();
-        } else {
-            setupWebGL();
-        }
-    }
+		if (altspace && altspace.inClient) {
+			setupAltspace();
+		} else {
+			setupWebGL();
+		}
+	}
 
-    if (config.auto) window.requestAnimationFrame(loop);
+	if (config.auto) window.requestAnimationFrame(loop);
 
 
-    /**
-     * The simulation scene.
-     * @readonly
-     * @instance
-     * @member {THREE.Scene} scene
-     * @memberof module:altspace/utilities.Simulation
-     */
-    Object.defineProperty(exports, 'scene', {
-        get: function () {
-            return scene;
-        }
-    })
+	/**
+	 * The simulation scene.
+	 * @readonly
+	 * @instance
+	 * @member {THREE.Scene} scene
+	 * @memberof module:altspace/utilities.Simulation
+	 */
+	Object.defineProperty(exports, 'scene', {
+		get: function () {
+			return scene;
+		}
+	})
 
-    /**
-     * The renderer being used.
-     * @readonly
-     * @instance
-     * @member {(THREE.WebGLRenderer|AltRenderer)} renderer
-     * @memberof module:altspace/utilities.Simulation
-     */
-    Object.defineProperty(exports, 'renderer', {
-        get: function () {
-            return renderer;
-        }
-    })
+	/**
+	 * The renderer being used.
+	 * @readonly
+	 * @instance
+	 * @member {(THREE.WebGLRenderer|AltRenderer)} renderer
+	 * @memberof module:altspace/utilities.Simulation
+	 */
+	Object.defineProperty(exports, 'renderer', {
+		get: function () {
+			return renderer;
+		}
+	})
 
-    /**
-     * The camera being used by the WebGL renderer.
-     * @readonly
-     * @instance
-     * @member {Three.Camera} camera
-     * @memberof module:altspace/utilities.Simulation
-     */
-    Object.defineProperty(exports, 'camera', {
-        get: function () {
-            return camera;
-        },
-        set: function (value) {
-            camera = value;
-        }
-    })
-    return exports;
+	/**
+	 * The camera being used by the WebGL renderer.
+	 * @readonly
+	 * @instance
+	 * @member {Three.Camera} camera
+	 * @memberof module:altspace/utilities.Simulation
+	 */
+	Object.defineProperty(exports, 'camera', {
+		get: function () {
+			return camera;
+		},
+		set: function (value) {
+			camera = value;
+		}
+	})
+	return exports;
 }
 
 window.altspace = window.altspace || {};
@@ -862,93 +3339,92 @@ window.altspace.utilities = window.altspace.utilities || {};
 
 
 altspace.utilities.multiloader = (function(){
+	var loader;
+	var TRACE;
+	var baseUrl = '';
+	var crossOrigin = '';//assigned to THREE.MTLLoader.crossOrigin
 
-  var loader;
-  var TRACE;
-  var baseUrl = '';
-  var crossOrigin = '';//assigned to THREE.MTLLoader.crossOrigin
+	function LoadRequest(){
+		//To create loadRequst: new MultiLoader.LoadRequest()
 
-  function LoadRequest(){
-    //To create loadRequst: new MultiLoader.LoadRequest()
+		var objUrls = [];//Paths to model geometry file, in Wavefront OBJ format.
+		var mtlUrls = [];//Paths to model materials file, in Wavefront MTL format.
+		var objects = [];//objects[i] is result of loader.load(objUrl[i], mtlUrl[i])
+		var error;//String indicating loading error with at least one file.
+		var objectsLoaded = 0;//Used internally to determine when loading complete.
 
-    var objUrls = [];//Paths to model geometry file, in Wavefront OBJ format.
-    var mtlUrls = [];//Paths to model materials file, in Wavefront MTL format.
-    var objects = [];//objects[i] is result of loader.load(objUrl[i], mtlUrl[i])
-    var error;//String indicating loading error with at least one file.
-    var objectsLoaded = 0;//Used internally to determine when loading complete.
+		return {
+			objUrls: objUrls,
+			mtlUrls: mtlUrls,
+			objects: objects,
+			error: error,
+			objectsLoaded: objectsLoaded
+		};
 
-    return {
-      objUrls: objUrls,
-      mtlUrls: mtlUrls,
-      objects: objects,
-      error: error,
-      objectsLoaded: objectsLoaded
-    };
+	}//end of LoadRequest
 
-  }//end of LoadRequest
+	function init(params){
+		var p = params || {};
+		TRACE = p.TRACE || false;
+		if (p.crossOrigin) crossOrigin = p.crossOrigin;
+		if (p.baseUrl) baseUrl = p.baseUrl;
+		if (baseUrl.slice(-1) !== '/') baseUrl += '/';
 
-  function init(params){
-    var p = params || {};
-    TRACE = p.TRACE || false;
-    if (p.crossOrigin) crossOrigin = p.crossOrigin;
-    if (p.baseUrl) baseUrl = p.baseUrl;
-    if (baseUrl.slice(-1) !== '/') baseUrl += '/';
+		loader = new altspace.utilities.shims.OBJMTLLoader();
+		loader.crossOrigin = crossOrigin;
+		if (TRACE) console.log('MultiLoader initialized with params', params);
+	}
 
-    loader = new THREE.OBJMTLLoader();
-    loader.crossOrigin = crossOrigin;
-    if (TRACE) console.log('MultiLoader initialized with params', params);
-  }
+	function load(loadRequest, onComplete){
+		var req = loadRequest;
+		var start = Date.now();
+		if (!req || !req instanceof LoadRequest){
+			throw new Error('MultiLoader.load expects first arg of type LoadRequest');
+		}
+		if (!onComplete || typeof(onComplete) !== 'function'){
+			throw new Error('MultiLoader.load expects second arg of type function');
+		}
+		if (!req.objUrls || !req.mtlUrls || req.objUrls.length !== req.mtlUrls.length){
+			throw new Error('MultiLoader.load called with bad LoadRequest');
+		}
+		var reqCount = req.objUrls.length;
+		if (TRACE) console.log('Loading models...')
+		for (var i=0; i < reqCount; i++){
+			var loadModel = function(req, i){//We need i in the closure to store result.
+				var objUrl = baseUrl + req.objUrls[i];
+				var mtlUrl = baseUrl + req.mtlUrls[i];
+				if (TRACE) console.log('Loading obj:'+objUrl+', mtl:'+mtlUrl);
+				loader.load(objUrl, mtlUrl, function(object3d){//onLoaded
+					req.objects[i] = object3d;
+					req.objectsLoaded++;
+					if(req.objectsLoaded === reqCount){
+						var elapsed = ((Date.now()-start)/1000.0).toFixed(2);
+						if (TRACE) console.log('Loaded '+reqCount+' models in '+elapsed+' seconds');
+						onComplete();
+					}
+				}, onProgress, function(){//onError 
+					var url = xhr.target.responseURL || '';
+					req.error = 'Error loading file '+url;
+				});
+			};
+			loadModel(req, i);
+		}
+	}
 
-  function load(loadRequest, onComplete){
-    var req = loadRequest;
-    var start = Date.now();
-    if (!req || !req instanceof LoadRequest){
-      throw new Error('MultiLoader.load expects first arg of type LoadRequest');
-    }
-    if (!onComplete || typeof(onComplete) !== 'function'){
-      throw new Error('MultiLoader.load expects second arg of type function');
-    }
-    if (!req.objUrls || !req.mtlUrls || req.objUrls.length !== req.mtlUrls.length){
-      throw new Error('MultiLoader.load called with bad LoadRequest');
-    }
-    var reqCount = req.objUrls.length;
-    if (TRACE) console.log('Loading models...')
-    for (var i=0; i < reqCount; i++){
-      var loadModel = function(req, i){//We need i in the closure to store result.
-        var objUrl = baseUrl + req.objUrls[i];
-        var mtlUrl = baseUrl + req.mtlUrls[i];
-        if (TRACE) console.log('Loading obj:'+objUrl+', mtl:'+mtlUrl);
-        loader.load(objUrl, mtlUrl, function(object3d){//onLoaded
-          req.objects[i] = object3d;
-          req.objectsLoaded++;
-          if(req.objectsLoaded === reqCount){
-            var elapsed = ((Date.now()-start)/1000.0).toFixed(2);
-            if (TRACE) console.log('Loaded '+reqCount+' models in '+elapsed+' seconds');
-            onComplete();
-          }
-        }, onProgress, function(){//onError 
-          var url = xhr.target.responseURL || '';
-          req.error = 'Error loading file '+url;
-        });
-      };
-      loadModel(req, i);
-    }
-  }
+	function onProgress(xhr){
+		if (xhr.lengthComputable && xhr.target.responseURL) {
+			//Skip progress log if no xhr url, meaning it's a local file.
+			var percentComplete = xhr.loaded / xhr.total * 100;
+			var filename = xhr.target.responseURL.split('/').pop();
+			if (TRACE) console.log('...'+filename+' '+Math.round(percentComplete,2)+'% downloaded');
+		}
+	}
 
-  function onProgress(xhr){
-    if (xhr.lengthComputable && xhr.target.responseURL) {
-      //Skip progress log if no xhr url, meaning it's a local file.
-      var percentComplete = xhr.loaded / xhr.total * 100;
-      var filename = xhr.target.responseURL.split('/').pop();
-      if (TRACE) console.log('...'+filename+' '+Math.round(percentComplete,2)+'% downloaded');
-    }
-  }
-
-  return {
-    init: init,
-    load: load,
-    LoadRequest: LoadRequest,
-  };
+	return {
+		init: init,
+		load: load,
+		LoadRequest: LoadRequest,
+	};
 
 }());
 
@@ -979,30 +3455,30 @@ altspace.utilities.multiloader = (function(){
  */
 THREE.Scene.prototype.updateAllBehaviors = function () {
 
-    var now = performance.now();
-    var lastNow = this.__lastNow || now;
+	var now = performance.now();
+	var lastNow = this.__lastNow || now;
 
-    var deltaTime = now - lastNow;
+	var deltaTime = now - lastNow;
 
-    var self = this;
+	var self = this;
 
-    //gather objects first so that behaviors can change the hierarchy during traversal without incident
-    var objectsWithBehaviors = [];
+	//gather objects first so that behaviors can change the hierarchy during traversal without incident
+	var objectsWithBehaviors = [];
 
-    this.traverse(function (object3d) {
+	this.traverse(function (object3d) {
 
-        if (object3d.__behaviorList) {
-            objectsWithBehaviors.push(object3d);
-        }
+		if (object3d.__behaviorList) {
+			objectsWithBehaviors.push(object3d);
+		}
 
-    });
+	});
 
-    for (var i = 0, max = objectsWithBehaviors.length; i < max; i++) {
-        object3d = objectsWithBehaviors[i];
-        object3d.updateBehaviors(deltaTime, self);
-    }
+	for (var i = 0, max = objectsWithBehaviors.length; i < max; i++) {
+		object3d = objectsWithBehaviors[i];
+		object3d.updateBehaviors(deltaTime, self);
+	}
 
-    this.__lastNow = now;
+	this.__lastNow = now;
 
 }
 
@@ -1021,8 +3497,8 @@ THREE.Scene.prototype.updateAllBehaviors = function () {
  */
 THREE.Object3D.prototype.addBehavior = function()
 {
-    this.__behaviorList = this.__behaviorList || [];
-    Array.prototype.push.apply(this.__behaviorList, arguments);
+	this.__behaviorList = this.__behaviorList || [];
+	Array.prototype.push.apply(this.__behaviorList, arguments);
 }
 
 /**
@@ -1034,8 +3510,8 @@ THREE.Object3D.prototype.addBehavior = function()
  */
 THREE.Object3D.prototype.addBehaviors = function()
 {
-    this.__behaviorList = this.__behaviorList || [];
-    Array.prototype.push.apply(this.__behaviorList, arguments);
+	this.__behaviorList = this.__behaviorList || [];
+	Array.prototype.push.apply(this.__behaviorList, arguments);
 }
 
 /**
@@ -1048,25 +3524,25 @@ THREE.Object3D.prototype.addBehaviors = function()
  */
 THREE.Object3D.prototype.removeBehavior = function(behavior)
 {
-    var i = this.__behaviorList.indexOf(behavior);
-    if (i !== -1) {
-        this.__behaviorList.splice(i, 1);
-        try {
+	var i = this.__behaviorList.indexOf(behavior);
+	if (i !== -1) {
+		this.__behaviorList.splice(i, 1);
+		try {
 
-            if (behavior.dispose) behavior.dispose.call(behavior, this);
+			if (behavior.dispose) behavior.dispose.call(behavior, this);
 
-        } catch (error) {
-            
-            console.group();
-            (console.error || console.log).call(console, error.stack || error);
-            console.log('[Behavior]');
-            console.log(behavior);
-            console.log('[Object3D]');
-            console.log(this);
-            console.groupEnd();
+		} catch (error) {
+			
+			console.group();
+			(console.error || console.log).call(console, error.stack || error);
+			console.log('[Behavior]');
+			console.log(behavior);
+			console.log('[Object3D]');
+			console.log(this);
+			console.groupEnd();
 
-        }
-    }
+		}
+	}
 }
 
 /**
@@ -1078,27 +3554,27 @@ THREE.Object3D.prototype.removeBehavior = function(behavior)
  */
 THREE.Object3D.prototype.removeAllBehaviors = function ()
 {
-    if (!this.__behaviorList || this.__behaviorList.length === 0) return null;
+	if (!this.__behaviorList || this.__behaviorList.length === 0) return null;
 
-    for (var i = 0, max = this.__behaviorList.length; i < max; i++) {
-        var behavior = this.__behaviorList[i];
+	for (var i = 0, max = this.__behaviorList.length; i < max; i++) {
+		var behavior = this.__behaviorList[i];
 
-        try {
+		try {
 
-            if (behavior.dispose) behavior.dispose.call(behavior, this);
+			if (behavior.dispose) behavior.dispose.call(behavior, this);
 
-        } catch (error) {
+		} catch (error) {
 
-            console.group();
-            (console.error || console.log).call(console, error.stack || error);
-            console.log('[Behavior]');
-            console.log(behavior);
-            console.log('[Object3D]');
-            console.log(this);
-            console.groupEnd();
+			console.group();
+			(console.error || console.log).call(console, error.stack || error);
+			console.log('[Behavior]');
+			console.log(behavior);
+			console.log('[Object3D]');
+			console.log(this);
+			console.groupEnd();
 
-        }
-    }
+		}
+	}
 }
 
 /**
@@ -1110,12 +3586,12 @@ THREE.Object3D.prototype.removeAllBehaviors = function ()
  * @memberof THREE.Object3D
  */
 THREE.Object3D.prototype.getBehaviorByType = function(type) {
-    if (!this.__behaviorList || this.__behaviorList.length === 0) return null;
+	if (!this.__behaviorList || this.__behaviorList.length === 0) return null;
 
-    for (var i = 0, max = this.__behaviorList.length; i < max; i++) {
-        if (this.__behaviorList[i].type === type)
-            return this.__behaviorList[i];
-    }
+	for (var i = 0, max = this.__behaviorList.length; i < max; i++) {
+		if (this.__behaviorList[i].type === type)
+			return this.__behaviorList[i];
+	}
 }
 
 /**
@@ -1127,84 +3603,84 @@ THREE.Object3D.prototype.getBehaviorByType = function(type) {
  */
 THREE.Object3D.prototype.updateBehaviors = function(deltaTime, scene) {
 
-    if (!this.__behaviorList || this.__behaviorList.length === 0) return;
+	if (!this.__behaviorList || this.__behaviorList.length === 0) return;
 
-    var toInit = [];
-    var toUpdate = this.__behaviorList.slice(); // prevent mutation of the behavior list during this loop
+	var toInit = [];
+	var toUpdate = this.__behaviorList.slice(); // prevent mutation of the behavior list during this loop
 
-    for (var i = 0, max = this.__behaviorList.length; i < max; i++) {
+	for (var i = 0, max = this.__behaviorList.length; i < max; i++) {
 
-        var behavior = this.__behaviorList[i];
-        if (!behavior.__isInitialized) toInit.push(behavior);
+		var behavior = this.__behaviorList[i];
+		if (!behavior.__isInitialized) toInit.push(behavior);
 
-    }
+	}
 
-    //Awake
-    for (var i = 0, max = toInit.length; i < max; i++) {
+	//Awake
+	for (var i = 0, max = toInit.length; i < max; i++) {
 
-        var behavior = toInit[i];
-        try {
+		var behavior = toInit[i];
+		try {
 
-            if (behavior.awake) behavior.awake.call(behavior, this, scene);
+			if (behavior.awake) behavior.awake.call(behavior, this, scene);
 
-        } catch (error) {
+		} catch (error) {
 
-            console.group();
-            (console.error || console.log).call(console, error.stack || error);
-            console.log('[Behavior]');
-            console.log(behavior);
-            console.log('[Object3D]');
-            console.log(this);
-            console.groupEnd();
+			console.group();
+			(console.error || console.log).call(console, error.stack || error);
+			console.log('[Behavior]');
+			console.log(behavior);
+			console.log('[Object3D]');
+			console.log(this);
+			console.groupEnd();
 
-        }
+		}
 
-    }
+	}
 
-    //Start
-    for (var i = 0, max = toInit.length; i < max; i++) {
+	//Start
+	for (var i = 0, max = toInit.length; i < max; i++) {
 
-        var behavior = toInit[i];
-        try {
+		var behavior = toInit[i];
+		try {
 
-            if (behavior.start) behavior.start.call(behavior);
+			if (behavior.start) behavior.start.call(behavior);
 
-        } catch (error) {
+		} catch (error) {
 
-            console.group();
-            (console.error || console.log).call(console, error.stack || error);
-            console.log('[Behavior]');
-            console.log(behavior);
-            console.log('[Object3D]');
-            console.log(this);
-            console.groupEnd();
+			console.group();
+			(console.error || console.log).call(console, error.stack || error);
+			console.log('[Behavior]');
+			console.log(behavior);
+			console.log('[Object3D]');
+			console.log(this);
+			console.groupEnd();
 
-        }
-        behavior.__isInitialized = true;
+		}
+		behavior.__isInitialized = true;
 
-    }
+	}
 
-    //Update
-    for (var i = 0, max = toUpdate.length; i < max; i++) {
+	//Update
+	for (var i = 0, max = toUpdate.length; i < max; i++) {
 
-        var behavior = toUpdate[i];
-        try {
+		var behavior = toUpdate[i];
+		try {
 
-            if (behavior.update) behavior.update.call(behavior, deltaTime);
+			if (behavior.update) behavior.update.call(behavior, deltaTime);
 
-        } catch (error) {
+		} catch (error) {
 
-            console.group();
-            (console.error || console.log).call(console, error.stack || error);
-            console.log('[Behavior]');
-            console.log(behavior);
-            console.log('[Object3D]');
-            console.log(this);
-            console.groupEnd();
+			console.group();
+			(console.error || console.log).call(console, error.stack || error);
+			console.log('[Behavior]');
+			console.log(behavior);
+			console.log('[Object3D]');
+			console.log(this);
+			console.groupEnd();
 
-        }
+		}
 
-    }
+	}
 
 }
 
@@ -1220,110 +3696,116 @@ altspace.utilities.shims = altspace.utilities.shims || {};
  * @module altspace/utilities/shims/cursor
  */
 altspace.utilities.shims.cursor = (function () {
-    //TODO: Support non-full window apps
+	//TODO: Support non-full window apps
 
-    var scene;
-    var camera;
-    var overObject;
+	var scene;
+	var camera;
+	var domElem;
 
-    var raycaster = new THREE.Raycaster();
+	var overObject;
 
-    /**
-     * Initializes the cursor module 
-     * @static
-     * @method init
-     * @param {THREE.Scene} scene
-     * @param {THREE.Camera} camera - Camera used for raycasting.
-     * @memberof module:altspace/utilities/shims/cursor
-     */
-    function init(_scene, _camera, _params) {
-        if (!_scene || !_scene instanceof THREE.Scene) {
-            throw new TypeError('Requires THREE.Scene argument');
-        }
-        if (!_camera || !_camera instanceof THREE.Camera) {
-            throw new TypeError('Requires THREE.Camera argument');
-        }
-        scene = _scene;
-        camera = _camera;
+	var raycaster = new THREE.Raycaster();
 
-        p = _params || {};
+	/**
+	 * Initializes the cursor module 
+	 * @static
+	 * @method init
+	 * @param {THREE.Scene} scene
+	 * @param {THREE.Camera} camera - Camera used for raycasting.
+	 * @param {Object} [options] - An options object
+	 * @param {THREE.WebGLRenderer} [options.renderer] - If supplied, applies cursor movement to render target 
+	 *	instead of entire client
+	 * @memberof module:altspace/utilities/shims/cursor
+	 */
+	function init(_scene, _camera, _params) {
+		if (!_scene || !_scene instanceof THREE.Scene) {
+			throw new TypeError('Requires THREE.Scene argument');
+		}
+		if (!_camera || !_camera instanceof THREE.Camera) {
+			throw new TypeError('Requires THREE.Camera argument');
+		}
+		scene = _scene;
+		camera = _camera;
 
-        window.addEventListener('mousedown', mouseDown, false)
-        window.addEventListener('mouseup', mouseUp, false)
-        window.addEventListener('mousemove', mouseMove, false)
-    }
+		p = _params || {};
+		domElem = p.renderer && p.renderer.domElement || window;
 
-    function mouseDown(event) {
+		domElem.addEventListener('mousedown', mouseDown, false)
+		domElem.addEventListener('mouseup', mouseUp, false)
+		domElem.addEventListener('mousemove', mouseMove, false)
+	}
 
-        var intersection = findIntersection(event);
-        if (!intersection || !intersection.point) return;
+	function mouseDown(event) {
 
-        var cursorEvent = createCursorEvent('cursordown', intersection);
-        intersection.object.dispatchEvent(cursorEvent);
-    }
+		var intersection = findIntersection(event);
+		if (!intersection || !intersection.point) return;
 
-    function mouseUp(event) {
-        var intersection = findIntersection(event);
+		var cursorEvent = createCursorEvent('cursordown', intersection);
+		intersection.object.dispatchEvent(cursorEvent);
+	}
 
-        var cursorEvent = createCursorEvent('cursorup', intersection);
+	function mouseUp(event) {
+		var intersection = findIntersection(event);
 
-        if (intersection) {
-            intersection.object.dispatchEvent(cursorEvent);
-        } else {
-            scene.dispatchEvent(cursorEvent);
-        }
-    }
+		var cursorEvent = createCursorEvent('cursorup', intersection);
 
-    function mouseMove(event) {
-        var intersection = findIntersection(event);
+		if (intersection) {
+			intersection.object.dispatchEvent(cursorEvent);
+		} else {
+			scene.dispatchEvent(cursorEvent);
+		}
+	}
 
-        var cursorEvent = createCursorEvent('cursormove', intersection);//TODO improve and don't fire only on scene
-        scene.dispatchEvent(cursorEvent);
+	function mouseMove(event) {
+		var intersection = findIntersection(event);
 
-        var object = intersection ? intersection.object : null;
-        if (overObject != object) {
-            if (overObject) {
-                cursorEvent = createCursorEvent('cursorleave', intersection);
-                overObject.dispatchEvent(cursorEvent);
-            }
+		var cursorEvent = createCursorEvent('cursormove', intersection);//TODO improve and don't fire only on scene
+		scene.dispatchEvent(cursorEvent);
 
-            if (object) {
-                cursorEvent = createCursorEvent('cursorenter', intersection);
-                object.dispatchEvent(cursorEvent);
-            }
+		var object = intersection ? intersection.object : null;
+		if (overObject != object) {
+			if (overObject) {
+				cursorEvent = createCursorEvent('cursorleave', intersection);
+				overObject.dispatchEvent(cursorEvent);
+			}
 
-            overObject = object;
-        }
-    }
+			if (object) {
+				cursorEvent = createCursorEvent('cursorenter', intersection);
+				object.dispatchEvent(cursorEvent);
+			}
 
-    function createCursorEvent(type, intersection) {
-        return {
-            type: type,
-            bubbles: true,
-            target: intersection ? intersection.object : null,
-            ray: {
-                origin: raycaster.ray.origin.clone(),
-                direction: raycaster.ray.direction.clone()
-            },
-            point: intersection ? intersection.point.clone() : null
-        }
-    }
+			overObject = object;
+		}
+	}
 
-    function findIntersection(mouseEvent) {
-        var mouse = new THREE.Vector2();
-        mouse.x = (mouseEvent.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(mouseEvent.clientY / window.innerHeight) * 2 + 1;
+	function createCursorEvent(type, intersection) {
+		return {
+			type: type,
+			bubbles: true,
+			target: intersection ? intersection.object : null,
+			ray: {
+				origin: raycaster.ray.origin.clone(),
+				direction: raycaster.ray.direction.clone()
+			},
+			point: intersection ? intersection.point.clone() : null
+		}
+	}
 
-        raycaster.setFromCamera(mouse, camera);
+	function findIntersection(mouseEvent) {
+		var mouse = new THREE.Vector2();
+		mouse.x = (mouseEvent.offsetX / (domElem.width || domElem.innerWidth)) * 2 - 1;
+		mouse.y = -(mouseEvent.offsetY / (domElem.height || domElem.innerHeight)) * 2 + 1;
 
-        var intersections = raycaster.intersectObjects(scene.children, true);
-        return intersections.length > 0 ? intersections[0] : null;
+		raycaster.setFromCamera(mouse, camera);
 
-    };
+		var intersections = raycaster.intersectObjects(scene.children, true);
+		return intersections.length > 0 ? intersections[0] : null;
 
-    return {
-        init: init,
-    };
+	}
+
+	return {
+		init: init,
+	};
 
 }());
 
@@ -1348,12 +3830,12 @@ altspace.utilities.shims.cursor = (function () {
  */
 ( function() {
 
-    if (!THREE) return;
+	if (!THREE) return;
 
-    if (window.altspace && window.altspace.inAltspace) return;
+	if (window.altspace && window.altspace.inAltspace) return;
 
-    THREE.EventDispatcher.prototype.dispatchEvent = dispatchEvent;
-    THREE.Object3D.prototype.dispatchEvent = dispatchEvent;
+	THREE.EventDispatcher.prototype.dispatchEvent = dispatchEvent;
+	THREE.Object3D.prototype.dispatchEvent = dispatchEvent;
 
 	function dispatchEvent( event ) {
 
@@ -1438,41 +3920,41 @@ window.altspace.utilities.behaviors = window.altspace.utilities.behaviors || {};
  * @memberof module:altspace/utilities/behaviors
  **/
 altspace.utilities.behaviors.Bob = function (config) {
-    var object3d;
+	var object3d;
 
-    config = config || {};
+	config = config || {};
 
-    if (config.shouldRotate === undefined) config.shouldRotate = true;
-    if (config.shouldMove === undefined) config.shouldMove = true;
+	if (config.shouldRotate === undefined) config.shouldRotate = true;
+	if (config.shouldMove === undefined) config.shouldMove = true;
 
-    var offsetPosition;
-    var lastBobPosition = new THREE.Vector3();
-    //TODO: Rotation
+	var offsetPosition;
+	var lastBobPosition = new THREE.Vector3();
+	//TODO: Rotation
 
-    var nowOffset = Math.random() * 10000;
+	var nowOffset = Math.random() * 10000;
 
-    function awake(o) {
-        object3d = o;
-        offsetPosition = object3d.position.clone();
-    }
+	function awake(o) {
+		object3d = o;
+		offsetPosition = object3d.position.clone();
+	}
 
-    function update(deltaTime) {
-        var nowInt = Math.floor(performance.now()) + nowOffset;
+	function update(deltaTime) {
+		var nowInt = Math.floor(performance.now()) + nowOffset;
 
-        if (config.shouldMove) {
-            if (!lastBobPosition.equals(object3d.position)) offsetPosition.copy(object3d.position);
+		if (config.shouldMove) {
+			if (!lastBobPosition.equals(object3d.position)) offsetPosition.copy(object3d.position);
 
-            object3d.position.y = offsetPosition.y + Math.sin(nowInt / 800) * 3;
-            object3d.position.x = offsetPosition.x + Math.sin(nowInt / 500) * 5;
-            lastBobPosition.copy(object3d.position);
-        }
+			object3d.position.y = offsetPosition.y + Math.sin(nowInt / 800) * 3;
+			object3d.position.x = offsetPosition.x + Math.sin(nowInt / 500) * 5;
+			lastBobPosition.copy(object3d.position);
+		}
 
-        if (config.shouldRotate) {
-            object3d.rotation.x = Math.sin(nowInt / 500) / 15;
-        }
-    }
+		if (config.shouldRotate) {
+			object3d.rotation.x = Math.sin(nowInt / 500) / 15;
+		}
+	}
 
-    return { awake: awake, update: update };
+	return { awake: awake, update: update };
 };
 
 window.altspace = window.altspace || {};
@@ -1491,67 +3973,67 @@ window.altspace.utilities.behaviors = window.altspace.utilities.behaviors || {};
  * @memberof module:altspace/utilities/behaviors
  */
 altspace.utilities.behaviors.ButtonStateStyle = function (config) {
-    var object3d;
-    var scene;
-    var originalColor;
-    var modifiedColor = new THREE.Color();
+	var object3d;
+	var scene;
+	var originalColor;
+	var modifiedColor = new THREE.Color();
 
-    config = config || {};
-    var overBrightness = config.overBrightness || 1.5;
-    var downBrightness = config.downBrightness || 0.5;
+	config = config || {};
+	var overBrightness = config.overBrightness || 1.5;
+	var downBrightness = config.downBrightness || 0.5;
 
-    function changeBrightness(brightness) {
-        modifiedColor.set(originalColor);
-        modifiedColor.multiplyScalar(brightness);
-        modifiedColor.r = THREE.Math.clamp(modifiedColor.r, 0, 1);
-        modifiedColor.g = THREE.Math.clamp(modifiedColor.g, 0, 1);
-        modifiedColor.b = THREE.Math.clamp(modifiedColor.b, 0, 1);
-        object3d.material.color = modifiedColor;
-    }
+	function changeBrightness(brightness) {
+		modifiedColor.set(originalColor);
+		modifiedColor.multiplyScalar(brightness);
+		modifiedColor.r = THREE.Math.clamp(modifiedColor.r, 0, 1);
+		modifiedColor.g = THREE.Math.clamp(modifiedColor.g, 0, 1);
+		modifiedColor.b = THREE.Math.clamp(modifiedColor.b, 0, 1);
+		object3d.material.color = modifiedColor;
+	}
 
-    function cursorLeave() {
-        object3d.removeEventListener('cursorleave', cursorLeave);
-        changeBrightness(1.0);
-    }
+	function cursorLeave() {
+		object3d.removeEventListener('cursorleave', cursorLeave);
+		changeBrightness(1.0);
+	}
 
-    function cursorEnter() {
-        changeBrightness(overBrightness);
-        object3d.addEventListener('cursorleave', cursorLeave);
-    }
+	function cursorEnter() {
+		changeBrightness(overBrightness);
+		object3d.addEventListener('cursorleave', cursorLeave);
+	}
 
-    function cursorUp(event) {
-        scene.removeEventListener('cursorup', cursorUp);
-        object3d.addEventListener('cursorenter', cursorEnter);
-        if (event.target === object3d) {
-            changeBrightness(overBrightness);
-            object3d.addEventListener('cursorleave', cursorLeave);
-        } else {
-            changeBrightness(1.0);
-        }
-    }
-    function cursorDown() {
-        scene.addEventListener('cursorup', cursorUp);
-        object3d.removeEventListener('cursorleave', cursorLeave);
-        object3d.removeEventListener('cursorenter', cursorEnter);
-        changeBrightness(downBrightness);
-    }
+	function cursorUp(event) {
+		scene.removeEventListener('cursorup', cursorUp);
+		object3d.addEventListener('cursorenter', cursorEnter);
+		if (event.target === object3d) {
+			changeBrightness(overBrightness);
+			object3d.addEventListener('cursorleave', cursorLeave);
+		} else {
+			changeBrightness(1.0);
+		}
+	}
+	function cursorDown() {
+		scene.addEventListener('cursorup', cursorUp);
+		object3d.removeEventListener('cursorleave', cursorLeave);
+		object3d.removeEventListener('cursorenter', cursorEnter);
+		changeBrightness(downBrightness);
+	}
 
-    function awake(o, s) {
-        object3d = o;
-        scene = s;
-        originalColor = config.originalColor || object3d.material.color;
-        object3d.addEventListener('cursorenter', cursorEnter);
-        object3d.addEventListener('cursordown', cursorDown);
-    }
+	function awake(o, s) {
+		object3d = o;
+		scene = s;
+		originalColor = config.originalColor || object3d.material.color;
+		object3d.addEventListener('cursorenter', cursorEnter);
+		object3d.addEventListener('cursordown', cursorDown);
+	}
 
-    function dispose() {
-        object3d.removeEventListener('cursorenter', cursorEnter);
-        object3d.removeEventListener('cursorleave', cursorLeave);
-        object3d.removeEventListener('cursorup', cursorUp);
-        object3d.removeEventListener('cursordown', cursorDown);
-    }
+	function dispose() {
+		object3d.removeEventListener('cursorenter', cursorEnter);
+		object3d.removeEventListener('cursorleave', cursorLeave);
+		object3d.removeEventListener('cursorup', cursorUp);
+		object3d.removeEventListener('cursordown', cursorDown);
+	}
 
-    return { awake: awake, dispose: dispose, type: 'ButtonStateStyle' };
+	return { awake: awake, dispose: dispose, type: 'ButtonStateStyle' };
 };
 
 window.altspace = window.altspace || {};
@@ -1570,178 +4052,178 @@ window.altspace.utilities.behaviors = window.altspace.utilities.behaviors || {};
  *  E.g. To constraint th object to an XY plane: `{x: true, y: true}`  
  *  Each axis can also be an object specifying the minimum and maximum limits
  *  of the constraint. E.g. `{x: {min: -10, max: 20}, y: true}`  
- *  Currently you must specify exactly two axes.
+ *  **Note:** Currently you must specify exactly two axes.
  * @memberof module:altspace/utilities/behaviors
  */
 altspace.utilities.behaviors.Drag = function (config) {
-    //space: view, local, world, sphere
-    //gridSnap, cursorSnap
-    //config: x: true, y: true, z: false, defaultDistance: 1000
+	//space: view, local, world, sphere
+	//gridSnap, cursorSnap
+	//config: x: true, y: true, z: false, defaultDistance: 1000
 
-    config = config || {};
+	config = config || {};
 
-    if (config.space === undefined) config.space = 'world';//TODO others
-    if (config.x === undefined) config.x = false;
-    if (config.y === undefined) config.y = false;
-    if (config.z === undefined) config.z = false;
-    if (config.cursorSnap === undefined) config.cursorSnap = true;//TODO false
+	if (config.space === undefined) config.space = 'world';//TODO others
+	if (config.x === undefined) config.x = false;
+	if (config.y === undefined) config.y = false;
+	if (config.z === undefined) config.z = false;
+	if (config.cursorSnap === undefined) config.cursorSnap = true;//TODO false
 
-    var inX = !!config.x;
-    var inY = !!config.y;
-    var inZ = !!config.z;
-    var min = new THREE.Vector3(
-      config.x.min !== undefined ? config.x.min : Number.NEGATIVE_INFINITY,
-      config.y.min !== undefined ? config.y.min : Number.NEGATIVE_INFINITY,
-      config.z.min !== undefined ? config.z.min : Number.NEGATIVE_INFINITY
-    );
-    var max = new THREE.Vector3(
-      config.x.max !== undefined ? config.x.max : Number.POSITIVE_INFINITY,
-      config.y.max !== undefined ? config.y.max : Number.POSITIVE_INFINITY,
-      config.z.max !== undefined ? config.z.max : Number.POSITIVE_INFINITY
-    );
+	var inX = !!config.x;
+	var inY = !!config.y;
+	var inZ = !!config.z;
+	var min = new THREE.Vector3(
+		config.x.min !== undefined ? config.x.min : Number.NEGATIVE_INFINITY,
+		config.y.min !== undefined ? config.y.min : Number.NEGATIVE_INFINITY,
+		config.z.min !== undefined ? config.z.min : Number.NEGATIVE_INFINITY
+	);
+	var max = new THREE.Vector3(
+		config.x.max !== undefined ? config.x.max : Number.POSITIVE_INFINITY,
+		config.y.max !== undefined ? config.y.max : Number.POSITIVE_INFINITY,
+		config.z.max !== undefined ? config.z.max : Number.POSITIVE_INFINITY
+	);
 
-    var object3d;
-    var scene;
-    var sync;
-    var intersector;
-    var dragOffset = new THREE.Vector3();
-    var raycaster = new THREE.Raycaster();
-    raycaster.linePrecision = 3;
+	var object3d;
+	var scene;
+	var sync;
+	var intersector;
+	var dragOffset = new THREE.Vector3();
+	var raycaster = new THREE.Raycaster();
+	raycaster.linePrecision = 3;
 
-    //if (THREE.REVISION !== '72') throw new Error('Drag requires three.js revision 72'); //TODO: Do we need a revision check?
+	//if (THREE.REVISION !== '72') throw new Error('Drag requires three.js revision 72'); //TODO: Do we need a revision check?
 
-    function awake(o, s) {
-        object3d = o;
-        scene = s;
-        sync = object3d.getBehaviorByType('Object3DSync');
-        makeIntersector();
-        scene.add(intersector);//TODO: see if I can remove it from the scene. Might not req 72.
-    }
+	function awake(o, s) {
+		object3d = o;
+		scene = s;
+		sync = object3d.getBehaviorByType('Object3DSync');
+		makeIntersector();
+		scene.add(intersector);//TODO: see if I can remove it from the scene. Might not req 72.
+	}
 
-    function makeIntersector() {
-        var extent = 10000;
-        var plane = new THREE.PlaneGeometry(extent, extent);
+	function makeIntersector() {
+		var extent = 10000;
+		var plane = new THREE.PlaneGeometry(extent, extent);
 
-        function makeXY() {
-            plane.rotateY(Math.PI);
-        }
-        function makeXZ() {
-            plane.rotateX(Math.PI / 2);
-        }
-        function makeYZ() {
-            plane.rotateY(Math.PI / 2);
-        }
-        function makeViewAligned() {
-            throw new Error('Not implemented');
-        }
+		function makeXY() {
+			plane.rotateY(Math.PI);
+		}
+		function makeXZ() {
+			plane.rotateX(Math.PI / 2);
+		}
+		function makeYZ() {
+			plane.rotateY(Math.PI / 2);
+		}
+		function makeViewAligned() {
+			throw new Error('Not implemented');
+		}
 
-        var axisCount = inX + inY + inZ; // implicit cast to integers
+		var axisCount = inX + inY + inZ; // implicit cast to integers
 
-        if (axisCount === 3) {
+		if (axisCount === 3) {
 
-            throw new Error('Arbitrary dragging currently unsupported. Please lock at least one axis.');
+			throw new Error('Arbitrary dragging currently unsupported. Please lock at least one axis.');
 
-        } else if (axisCount === 2) {
+		} else if (axisCount === 2) {
 
-            if (inX && inY) {
-                makeXY();
-            } else if (inX && inZ) {
-                makeXZ();
-            } else if (inY && inZ) {
-                makeYZ();
-            }
+			if (inX && inY) {
+				makeXY();
+			} else if (inX && inZ) {
+				makeXZ();
+			} else if (inY && inZ) {
+				makeYZ();
+			}
 
-        } else if (axisCount === 1) {
+		} else if (axisCount === 1) {
 
-            throw new Error('Single axis dragging currently unsupported.');
-            //TODO: make possible, possibly via view-aligned plane 
+			throw new Error('Single axis dragging currently unsupported.');
+			//TODO: make possible, possibly via view-aligned plane 
 
-        } else {
-            throw new Error('Invalid axis configuration');
-        }
-        var material = new THREE.MeshBasicMaterial({ color: 'purple' });
-        material.side = THREE.DoubleSide;
-        intersector = new THREE.Mesh(plane, material);
-        intersector.visible = false;// ensures other raycasters don't hit our intersector
-        intersector.material.visible = false;// ensures we never see flicker during temp visibility
-    }
+		} else {
+			throw new Error('Invalid axis configuration');
+		}
+		var material = new THREE.MeshBasicMaterial({ color: 'purple' });
+		material.side = THREE.DoubleSide;
+		intersector = new THREE.Mesh(plane, material);
+		intersector.visible = false;// ensures other raycasters don't hit our intersector
+		intersector.material.visible = false;// ensures we never see flicker during temp visibility
+	}
 
-    function getWorldPosition(obj) {
-        obj.updateMatrixWorld();
-        var vec = new THREE.Vector3();
-        vec.setFromMatrixPosition(obj.matrixWorld);
-        return vec;
-    }
+	function getWorldPosition(obj) {
+		obj.updateMatrixWorld();
+		var vec = new THREE.Vector3();
+		vec.setFromMatrixPosition(obj.matrixWorld);
+		return vec;
+	}
 
-    function vec2str(vec) {
-        function shortNum(num) {
-            return Math.floor(num * 100) / 100;
-        }
-        return 'x: ' + shortNum(vec.x) + ', y: ' + shortNum(vec.y) + ', z: ' + shortNum(vec.z);
-    }
+	function vec2str(vec) {
+		function shortNum(num) {
+			return Math.floor(num * 100) / 100;
+		}
+		return 'x: ' + shortNum(vec.x) + ', y: ' + shortNum(vec.y) + ', z: ' + shortNum(vec.z);
+	}
 
-    function startDrag(event) {
-        scene.addEventListener('cursorup', stopDrag);
-        scene.addEventListener('cursormove', moveDrag);
+	function startDrag(event) {
+		scene.addEventListener('cursorup', stopDrag);
+		scene.addEventListener('cursormove', moveDrag);
 
-        //Remember difference between center of object and drag point. 
-        //Otherwise, object appears to 'jump' when selected, moving so its
-        //center is directly until the cursor. We allow drag on edge of object.
-        raycaster.set(event.ray.origin, event.ray.direction);
-        var hit = raycaster.intersectObject(object3d, true)[0];
-        if (!hit) return;
-        var dragPoint = hit.point.clone();
-        var objectCenterPoint = getWorldPosition(object3d).clone();
-        dragOffset.copy(dragPoint).sub(objectCenterPoint);
+		//Remember difference between center of object and drag point. 
+		//Otherwise, object appears to 'jump' when selected, moving so its
+		//center is directly until the cursor. We allow drag on edge of object.
+		raycaster.set(event.ray.origin, event.ray.direction);
+		var hit = raycaster.intersectObject(object3d, true)[0];
+		if (!hit) return;
+		var dragPoint = hit.point.clone();
+		var objectCenterPoint = getWorldPosition(object3d).clone();
+		dragOffset.copy(dragPoint).sub(objectCenterPoint);
 
-        //Move to drag point (not object center), where raycast hits the object.
-        intersector.position.copy(dragPoint);
-        intersector.updateMatrixWorld();// necessary for raycast, TODO: Make GH issue
-    }
+		//Move to drag point (not object center), where raycast hits the object.
+		intersector.position.copy(dragPoint);
+		intersector.updateMatrixWorld();// necessary for raycast, TODO: Make GH issue
+	}
 
-    function moveDrag(event) {
+	function moveDrag(event) {
 
-        if (!sync.isMine) sync.takeOwnership();
+		if (sync && !sync.isMine) sync.takeOwnership();
 
-        //find intersection
-        intersector.visible = true;// allow our intersector to be intersected
-        raycaster.set(event.ray.origin, event.ray.direction);
-        var intersection = raycaster.intersectObject(intersector, true)[0];
-        intersector.visible = false;// disallow our intersector to be intersected
+		//find intersection
+		intersector.visible = true;// allow our intersector to be intersected
+		raycaster.set(event.ray.origin, event.ray.direction);
+		var intersection = raycaster.intersectObject(intersector, true)[0];
+		intersector.visible = false;// disallow our intersector to be intersected
 
-        if (!intersection) return;
+		if (!intersection) return;
 
-        //New position is intersection point minus offset. Need offset since
-        //user probably won't click on exact center of object to drag it.
-        var targetWorldPosition = new THREE.Vector3();
-        targetWorldPosition.copy(intersection.point).sub(dragOffset);
-        //But maintain the original y position of the object.
-        targetWorldPosition.y = getWorldPosition(object3d).y;
+		//New position is intersection point minus offset. Need offset since
+		//user probably won't click on exact center of object to drag it.
+		var targetWorldPosition = new THREE.Vector3();
+		targetWorldPosition.copy(intersection.point).sub(dragOffset);
+		//But maintain the original y position of the object.
+		targetWorldPosition.y = getWorldPosition(object3d).y;
 
-        //constrain target position
-        targetWorldPosition.clamp(min, max);
+		//constrain target position
+		targetWorldPosition.clamp(min, max);
 
-        //move object
-        object3d.parent.updateMatrixWorld();
-        var targetLocalPosition = object3d.parent.worldToLocal(targetWorldPosition);//TODO: Test with nested objects
-        object3d.position.set(
-          config.x ? targetLocalPosition.x : object3d.position.x,
-          config.y ? targetLocalPosition.y : object3d.position.y,
-          config.z ? targetLocalPosition.z : object3d.position.z
-        );
+		//move object
+		object3d.parent.updateMatrixWorld();
+		var targetLocalPosition = object3d.parent.worldToLocal(targetWorldPosition);//TODO: Test with nested objects
+		object3d.position.set(
+			config.x ? targetLocalPosition.x : object3d.position.x,
+			config.y ? targetLocalPosition.y : object3d.position.y,
+			config.z ? targetLocalPosition.z : object3d.position.z
+		);
 
-    }
+	}
 
-    function stopDrag() {
-        scene.removeEventListener('cursorup', stopDrag);
-        scene.removeEventListener('cursormove', moveDrag);
-    }
+	function stopDrag() {
+		scene.removeEventListener('cursorup', stopDrag);
+		scene.removeEventListener('cursormove', moveDrag);
+	}
 
-    function start() {
-        object3d.addEventListener('cursordown', startDrag);
-    }
+	function start() {
+		object3d.addEventListener('cursordown', startDrag);
+	}
 
-    return { awake: awake, start: start };
+	return { awake: awake, start: start };
 };
 
 /**
@@ -1774,7 +4256,7 @@ altspace.utilities.behaviors.GamepadControls = function (config) {
 	var object3d;
 	var gamepad;
 	var scene;
-  var sync;
+	var sync;
 
 	var isAltModeR= false;
 	var isAltModeL= false;
@@ -1794,7 +4276,7 @@ altspace.utilities.behaviors.GamepadControls = function (config) {
 
 		object3d = o;
 		scene = s;
-    sync = object3d.getBehaviorByType('Object3DSync');
+		sync = object3d.getBehaviorByType('Object3DSync');
 		originalObj = object3d.clone();
 		gamepad = getGamepad();
 		if (gamepad) {
@@ -1810,7 +4292,7 @@ altspace.utilities.behaviors.GamepadControls = function (config) {
 		}
 
 		scene.addEventListener('cursordown', function(e) {
-		  //preventDefault only works when app has focus, so call after initial click
+			//preventDefault only works when app has focus, so call after initial click
 			if (gamepad && !isInitialized) {
 				preventDefault(gamepad);
 				isInitialized = true;
@@ -1963,287 +4445,106 @@ window.altspace.utilities.behaviors = window.altspace.utilities.behaviors || {};
  * @param {Object} [config] Optional parameters.
  * @param {String} [config.event='cursorenter'] Specify the name of event which
  *  triggers the color change.  Default is 'cursorenter' for a hover effect.
- * @param {String} [config.color='yellow'] Color specified as a hexadecimal or
- *  a CSS-style string, for example, "red", "#ff0000", or "rgb(250, 0, 0)".
+ * @param {THREE.Color} [config.color=THREE.Color('yellow')] A THREE.Color value that will be applied to the object's
+ *  material.
  * @memberof module:altspace/utilities/behaviors
  */
 altspace.utilities.behaviors.HoverColor = function(config){
 
-  config = config || {};
+	config = config || {};
 
-  //Default is to trigger color change on cursorenter/cursorleave events,
-  //also support triggering on cursordown/cursorup events.
-  if (config.event === undefined) config.event = 'cursorenter';
-  if (config.event !== 'cursorenter' && config.event !== 'cursordown') {
-    throw Error('Expected config.event "cursorenter" or "cursordown"');
-  }
-  if (config.color === undefined) config.color = new THREE.Color('yellow');
+	//Default is to trigger color change on cursorenter/cursorleave events,
+	//also support triggering on cursordown/cursorup events.
+	if (config.event === undefined) config.event = 'cursorenter';
+	if (config.event !== 'cursorenter' && config.event !== 'cursordown') {
+		throw Error('Expected config.event "cursorenter" or "cursordown"');
+	}
+	if (config.color === undefined) config.color = new THREE.Color('yellow');
 
-  var object3d;
-  var cursordownObject;
-  var cursorenterObject;
-  var scene;
+	var object3d;
+	var cursordownObject;
+	var cursorenterObject;
+	var scene;
 
 
-  function awake(o, s) {
-    object3d = o;
-    scene = s;
-    object3d.addEventListener('cursordown', cursordown);
-    scene.addEventListener('cursorup', cursorupScene);
-    if (config.event === 'cursorenter') {
-      object3d.addEventListener('cursorenter', cursorenter);
-      object3d.addEventListener('cursorleave', cursorleave);
-    }
-  }
+	function awake(o, s) {
+		object3d = o;
+		scene = s;
+		object3d.addEventListener('cursordown', cursordown);
+		scene.addEventListener('cursorup', cursorupScene);
+		if (config.event === 'cursorenter') {
+			object3d.addEventListener('cursorenter', cursorenter);
+			object3d.addEventListener('cursorleave', cursorleave);
+		}
+	}
 
-  function cursordown(event){
-    cursordownObject = object3d;
-    if (config.event === 'cursordown' ){
-      setColor(cursordownObject);
-    }
-  }
+	function cursordown(event){
+		cursordownObject = object3d;
+		if (config.event === 'cursordown' ){
+			setColor(cursordownObject);
+		}
+	}
 
-  function cursorenter(event){
-    //ignore hover events if a different object is selected,
-    //for example during a drag we don't want to change highlight
-    if (cursordownObject && cursordownObject !== object3d){
-      return;
-    } 
-    if (cursorenterObject){
-      unsetcolor(cursorenterObject);
-    }
-    cursorenterObject = object3d;
-    setColor(object3d);
-  }
+	function cursorenter(event){
+		//ignore hover events if a different object is selected,
+		//for example during a drag we don't want to change highlight
+		if (cursordownObject && cursordownObject !== object3d){
+			return;
+		} 
+		if (cursorenterObject){
+			unsetcolor(cursorenterObject);
+		}
+		cursorenterObject = object3d;
+		setColor(object3d);
+	}
 
-  function cursorleave(event){
-    if (cursorenterObject === object3d){
-      cursorenterObject = null;
-      unsetColor(object3d);
-    }
-  }
+	function cursorleave(event){
+		if (cursorenterObject === object3d){
+			cursorenterObject = null;
+			unsetColor(object3d);
+		}
+	}
 
-  function cursorupScene(event){
-    if (config.event === 'cursordown' && cursordownObject ){
-      unsetColor(cursordownObject);
-    }
-    cursordownObject = null;
-  }
+	function cursorupScene(event){
+		if (config.event === 'cursordown' && cursordownObject ){
+			unsetColor(cursordownObject);
+		}
+		cursordownObject = null;
+	}
 
-  function setColor(o){
-    if (o.material && o.material.color){
-      o.userData.origColor = o.material.color;
-      o.material.color = config.color;  
-      //Not strictly needed but seems to make updating faster in Altspace.
-      if (o.material) o.material.needsUpdate = true;
-    } 
-    for (var i = 0; i < o.children.length; i++){
-      setColor(o.children[i], config.color);//recursively apply to children
-    }
-  }
+	function setColor(o){
+		if (o.material && o.material.color){
+			o.userData.origColor = o.material.color;
+			o.material.color = config.color;  
+			//Not strictly needed but seems to make updating faster in Altspace.
+			if (o.material) o.material.needsUpdate = true;
+		} 
+		for (var i = 0; i < o.children.length; i++){
+			setColor(o.children[i], config.color);//recursively apply to children
+		}
+	}
 
-  function unsetColor(o){
-    if (o.material && o.material.color){
-      if (!o.userData.origColor){
-        console.error('Cannot unsetColor, no userData.origColor for object', o);
-        return;
-      }
-      o.material.color = o.userData.origColor;
-      if (o.material) o.material.needsUpdate = true;
-    } 
-    for (var i = 0; i < o.children.length; i++){
-      unsetColor(o.children[i]);
-    }
-  }
+	function unsetColor(o){
+		if (o.material && o.material.color){
+			if (!o.userData.origColor){
+				console.error('Cannot unsetColor, no userData.origColor for object', o);
+				return;
+			}
+			o.material.color = o.userData.origColor;
+			if (o.material) o.material.needsUpdate = true;
+		} 
+		for (var i = 0; i < o.children.length; i++){
+			unsetColor(o.children[i]);
+		}
+	}
 
-  return {
-    awake: awake,
-    //no update method, event-driven
-  };
+	return {
+		awake: awake,
+		//no update method, event-driven
+	};
 
 };
 
-window.altspace = window.altspace || {};
-window.altspace.utilities = window.altspace.utilities || {};
-window.altspace.utilities.behaviors = window.altspace.utilities.behaviors || {};
-
-/**
- * The Object3DSync behavior syncs an object's transform and data
- *
- * @class Object3DSync
- * @param {Object} [config]
- * @param {Boolean} [config.position=false] Whether object's position should
- *  be synced
- * @param {Boolean} [config.rotation=false] Whether object's rotation should
- *  be synced
- * @param {Boolean} [config.scale=false] Whether object's scale should
- *  be synced
- * @param {Boolean} [config.auto=false] Whether the object should be synced 
- *  automatically. Not currently recommended.
- * @param {Boolean} [config.world=false] Whether world coordiantes should
- *  be sent when synchronizing position and rotation, instead of the
- *  transformation relative to the object's parent.  Use if synced object
- *  is a child (e.g. of the tracking skeleton) only in the sender scene.
- * @memberof module:altspace/utilities/behaviors
- **/
-window.altspace.utilities.behaviors.Object3DSync = function (config){
-    config = config || {};
-    /*if (config.position === undefined) config.position = true;
-    if (config.rotation === undefined) config.rotation = true;
-    if (config.scale === undefined) config.scale = true; */
-    var object3d;
-    var scene;
-    var ref;
-    var key;
-    var dataRef;
-    var ownerRef;
-    var transformRef;
-
-    var sceneSync;
-    var isMine = false;
-
-    var position = new THREE.Vector3();
-    var quaternion = new THREE.Quaternion(); 
-    var scale = new THREE.Vector3();
-
-
-    function link(objectRef, sS) {
-        ref = objectRef;
-        key = ref.key();
-        transformRef = ref.child('batch');
-        dataRef = ref.child('data');
-        ownerRef = ref.child('owner');
-        sceneSync = sS;
-    }
-
-    //TODO: lerp
-    function setupReceive() {
-        transformRef.on('value', function (snapshot) {
-
-            if (isMine) return;
-
-            var value = snapshot.val();
-            if (!value) return;
-
-            if (config.position) {
-                object3d.position.set(value.position.x, value.position.y, value.position.z);
-            }
-            if (config.rotation) {
-                object3d.quaternion.set(value.quaternion.x, value.quaternion.y, value.quaternion.z, value.quaternion.w);
-            }
-            if (config.scale) {
-                object3d.scale.set(value.scale.x, value.scale.y, value.scale.z);
-            }
-        });
-
-        ownerRef.on('value', function (snapshot) {
-            var newOwnerId = snapshot.val();
-
-            var gained = newOwnerId === sceneSync.clientId && !isMine;
-            if (gained) object3d.dispatchEvent({ type: 'ownershipgained' });
-
-            var lost = newOwnerId !== sceneSync.clientId && isMine;
-            if (lost) object3d.dispatchEvent({ type: 'ownershiplost' });
-            
-            isMine = newOwnerId === sceneSync.clientId;
-        });
-    }
-
-    function send() {
-        if (!isMine) return;
-
-        var transform = {};
-        if (config.world) {
-            object3d.updateMatrixWorld();//call before sending to avoid being a frame behind
-            object3d.matrixWorld.decompose(position, quaternion, scale); 
-        } else {
-            position = object3d.position;
-            quaternion = object3d.quaternion;
-            scale = object3d.scale;
-        }
-        if (config.position) {
-            transform.position = {
-                x: position.x,
-                y: position.y,
-                z: position.z
-            };
-        }
-        if (config.rotation) {
-            transform.quaternion = {
-                x: quaternion.x,
-                y: quaternion.y,
-                z: quaternion.z,
-                w: quaternion.w
-            };
-        }
-        if (config.scale) {
-            transform.scale = {
-                x: scale.x,
-                y: scale.y,
-                z: scale.z
-            };
-        }
-        if (Object.keys(transform).length > 0) {
-            transformRef.set(transform);
-        }
-    }
-
-    function awake(o, s) {
-        object3d = o;
-        scene = s;
-
-        setupReceive();
-    }
-
-    function update(deltaTime) {
-        
-    }
-
-    /**
-     * Take ownership of this object. The client that instantiates an object owns it,
-     * afterwards changes in ownership must be managed by the app. Manual modifications
-     * to the Firebase ref's will not obey ownership status.
-     * @instance
-     * @method takeOwnership
-     * @memberof module:altspace/utilities/behaviors.Object3DSync
-     */
-    function takeOwnership() {
-        ownerRef.set(sceneSync.clientId);
-    }
-
-    var exports = { awake: awake, update: update, type: 'Object3DSync', link: link, autoSend: send, takeOwnership: takeOwnership };
-
-    /**
-     * Firebase reference for the 'data' child location, can be used to store data related to
-     * this object.
-     * @readonly
-     * @instance
-     * @member {Firebase} dataRef
-     * @memberof module:altspace/utilities/behaviors.Object3DSync
-     */
-    Object.defineProperty(exports, 'dataRef', {
-        get: function () {
-            return dataRef;
-        }
-    });
-
-    /**
-     * True if this object is currently owned by this client, false otherwise.
-     * @readonly
-     * @instance
-     * @member {boolean} isMine
-     * @memberof module:altspace/utilities/behaviors.Object3DSync
-     */
-    Object.defineProperty(exports, 'isMine', {
-        get: function () {
-            return isMine;
-        }
-    });
-
-    return exports;
-};
-
-//manual modifications to the ref's will not obey ownership status.
 window.altspace = window.altspace || {};
 window.altspace.utilities = window.altspace.utilities || {};
 window.altspace.utilities.behaviors = window.altspace.utilities.behaviors || {};
@@ -2269,241 +4570,241 @@ window.altspace.utilities.behaviors = window.altspace.utilities.behaviors || {};
  * @memberof module:altspace/utilities/behaviors
  **/
 window.altspace.utilities.behaviors.SceneSync = function (instanceRef, config) {
-    var sceneRef = instanceRef.child('scene');
-    var clientsRef = instanceRef.child('clients');
+	var sceneRef = instanceRef.child('scene');
+	var clientsRef = instanceRef.child('clients');
 
-    config = config || {};
-    var instantiators = config.instantiators || {};
-    var destroyers = config.destroyers || {};
+	config = config || {};
+	var instantiators = config.instantiators || {};
+	var destroyers = config.destroyers || {};
 
-    var autoSendRateMS = 100;
+	var autoSendRateMS = 100;
 
-    var syncBehaviors = [];
-    var objectForKey = {};
-    var keyForUuid = {};
+	var syncBehaviors = [];
+	var objectForKey = {};
+	var keyForUuid = {};
 
-    var clientId;
-    // there should always be one master client in the room. For now it will be the longest person online.
-    var masterClientId;
+	var clientId;
+	// there should always be one master client in the room. For now it will be the longest person online.
+	var masterClientId;
 
-    function autoSendAll() {
-        for (var i = 0, max = syncBehaviors.length; i < max; i++) {
-            syncBehaviors[i].autoSend();
-        }
-    }
+	function autoSendAll() {
+		for (var i = 0, max = syncBehaviors.length; i < max; i++) {
+			syncBehaviors[i].autoSend();
+		}
+	}
 
-    function awake(o, s) {
-        setInterval(autoSendAll, autoSendRateMS);
+	function awake(o, s) {
+		setInterval(autoSendAll, autoSendRateMS);
 
-        var scene = s;
+		var scene = s;
 
-        // temporary way of having unique identifiers for each client
-        clientId = scene.uuid;
-        clientsRef.on("value", function (snapshot) {
-            var clientIds = snapshot.val();
+		// temporary way of having unique identifiers for each client
+		clientId = scene.uuid;
+		clientsRef.on("value", function (snapshot) {
+			var clientIds = snapshot.val();
 
-            if (!clientIds) return;
+			if (!clientIds) return;
 
-            masterClientKey = Object.keys(clientIds)[0];
-            masterClientId = clientIds[masterClientKey];
-        });
-        // add our client ID to the list of connected clients, 
-        // but have it be automatically removed by firebase if we disconnect for any reason
-        clientsRef.push(clientId).onDisconnect().remove();
+			masterClientKey = Object.keys(clientIds)[0];
+			masterClientId = clientIds[masterClientKey];
+		});
+		// add our client ID to the list of connected clients, 
+		// but have it be automatically removed by firebase if we disconnect for any reason
+		clientsRef.push(clientId).onDisconnect().remove();
 
-        instanceRef.child('initialized').once('value', function (snapshot) {
-            var shouldInitialize = !snapshot.val();
-            snapshot.ref().set(true);
-            if (config.ready) {
-                config.ready(shouldInitialize);
-            }
-        });
-        
+		instanceRef.child('initialized').once('value', function (snapshot) {
+			var shouldInitialize = !snapshot.val();
+			snapshot.ref().set(true);
+			if (config.ready) {
+				config.ready(shouldInitialize);
+			}
+		});
+		
 
-        sceneRef.on('child_added', onInstantiate.bind(this));
-        sceneRef.on('child_removed', onDestroy.bind(this));
-    }
+		sceneRef.on('child_added', onInstantiate.bind(this));
+		sceneRef.on('child_removed', onDestroy.bind(this));
+	}
 
-    /**
-     * Instantiate an object by syncType.
-     * @instance
-     * @method instantiate
-     * @param {String} syncType Type of object to instantiate.
-     * @param {Object} initData An object containing initialization data, passed
-     *  to the instantiator.
-     * @param {Boolean} destroyOnDisconnect If the object should be destroyed
-     *  across all synced instance when the instantiating instance disconnects.
-     * @memberof module:altspace/utilities/behaviors.SceneSync
-     */
-    function instantiate(syncType, initData, destroyOnDisconnect) {
-        initData = initData || {};
-        var objectRef = sceneRef.push({ syncType: syncType, initData: initData },
-            function (error) { if (error) throw Error('Failed to save to Firebase', error) }
-        );
-        if (destroyOnDisconnect) {
-            objectRef.onDisconnect().remove();//send remvoe_child to remote clients
-        }
-        //instantiation done, local child_added callback happens syncronously with push
-        var object = objectForKey[objectRef.key()];
-        object.getBehaviorByType('Object3DSync').takeOwnership();
-        return object;
-    }
+	/**
+	 * Instantiate an object by syncType.
+	 * @instance
+	 * @method instantiate
+	 * @param {String} syncType Type of object to instantiate.
+	 * @param {Object} initData An object containing initialization data, passed
+	 *  to the instantiator.
+	 * @param {Boolean} destroyOnDisconnect If the object should be destroyed
+	 *  across all synced instance when the instantiating instance disconnects.
+	 * @memberof module:altspace/utilities/behaviors.SceneSync
+	 */
+	function instantiate(syncType, initData, destroyOnDisconnect) {
+		initData = initData || {};
+		var objectRef = sceneRef.push({ syncType: syncType, initData: initData },
+			function (error) { if (error) throw Error('Failed to save to Firebase', error) }
+		);
+		if (destroyOnDisconnect) {
+			objectRef.onDisconnect().remove();//send remvoe_child to remote clients
+		}
+		//instantiation done, local child_added callback happens syncronously with push
+		var object = objectForKey[objectRef.key()];
+		object.getBehaviorByType('Object3DSync').takeOwnership();
+		return object;
+	}
 
-    function onInstantiate(snapshot) {
+	function onInstantiate(snapshot) {
 
-        var data = snapshot.val();
-        var key = snapshot.key();
+		var data = snapshot.val();
+		var key = snapshot.key();
 
-        var instantiator = instantiators[data.syncType];
+		var instantiator = instantiators[data.syncType];
 
-        if (!instantiator) {
-            console.warn('No instantiator found for syncType: ' + data.syncType);
-            return;
-        }
+		if (!instantiator) {
+			console.warn('No instantiator found for syncType: ' + data.syncType);
+			return;
+		}
 
-        var object3d = instantiator(data.initData, data.syncType);
-        if (!object3d) {
-            console.error(data.syncType + '.create must return an Object3D');
-            return;
-        }
-        objectForKey[key] = object3d;
-        keyForUuid[object3d.uuid] = key;
+		var object3d = instantiator(data.initData, data.syncType);
+		if (!object3d) {
+			console.error(data.syncType + '.create must return an Object3D');
+			return;
+		}
+		objectForKey[key] = object3d;
+		keyForUuid[object3d.uuid] = key;
 
-        var syncBehavior = object3d.getBehaviorByType('Object3DSync');
-        if (!syncBehavior) {
-            console.error(data.syncType + ' instantiator must return an Object3D with an Object3DSync behavior');
-            return;
-        }
+		var syncBehavior = object3d.getBehaviorByType('Object3DSync');
+		if (!syncBehavior) {
+			console.error(data.syncType + ' instantiator must return an Object3D with an Object3DSync behavior');
+			return;
+		}
 
-        syncBehaviors.push(syncBehavior);
-        syncBehavior.link(snapshot.ref(), this);
-    }
+		syncBehaviors.push(syncBehavior);
+		syncBehavior.link(snapshot.ref(), this);
+	}
 
-    /**
-     * Destroy a synced object across instances.
-     * @instance
-     * @method destroy
-     * @param {Object} object3d The object to destroy.
-     * @memberof module:altspace/utilities/behaviors.SceneSync
-     */
-    function destroy(object3d) {
-        var key = keyForUuid[object3d.uuid];
-        if (!key) {
-            console.warn('Failed to find key for object3d to be destroyed', object3d);
-            return;
-        }
-        sceneRef.child(key).remove(function (error) {
-            if (error) console.warn('Failed to remove from Firebase', error);
-        });
-        sceneRef.child(key).off();//detach all callbacks
-    }
+	/**
+	 * Destroy a synced object across instances.
+	 * @instance
+	 * @method destroy
+	 * @param {Object} object3d The object to destroy.
+	 * @memberof module:altspace/utilities/behaviors.SceneSync
+	 */
+	function destroy(object3d) {
+		var key = keyForUuid[object3d.uuid];
+		if (!key) {
+			console.warn('Failed to find key for object3d to be destroyed', object3d);
+			return;
+		}
+		sceneRef.child(key).remove(function (error) {
+			if (error) console.warn('Failed to remove from Firebase', error);
+		});
+		sceneRef.child(key).off();//detach all callbacks
+	}
 
-    function onDestroy(snapshot) {
-        var data = snapshot.val();
-        var key = snapshot.key();
-        var object3d = objectForKey[key];
-        if (!object3d) {
-            console.warn('Failed to find object matching deleted key', key);
-            return;
-        }
-        var syncType = data.syncType;
-        if (!syncType) {
-            console.warn('No syncType found for object being destroyed', object3d);
-            return;
-        }
+	function onDestroy(snapshot) {
+		var data = snapshot.val();
+		var key = snapshot.key();
+		var object3d = objectForKey[key];
+		if (!object3d) {
+			console.warn('Failed to find object matching deleted key', key);
+			return;
+		}
+		var syncType = data.syncType;
+		if (!syncType) {
+			console.warn('No syncType found for object being destroyed', object3d);
+			return;
+		}
 
-        function defaultDestroyer(object3d) {
+		function defaultDestroyer(object3d) {
 
-            // remove all behaviors including this one
-            object3d.removeAllBehaviors();
+			// remove all behaviors including this one
+			object3d.removeAllBehaviors();
 
-            // remove from scene or parent
-            if (object3d.parent) {
-                object3d.parent.remove(object3d);
-            }
+			// remove from scene or parent
+			if (object3d.parent) {
+				object3d.parent.remove(object3d);
+			}
 
-            if (object3d.geometry) {
-                object3d.geometry.dispose();
-            }
+			if (object3d.geometry) {
+				object3d.geometry.dispose();
+			}
 
-            if (object3d.material) {
-                if (object3d.material.map) {
-                    object3d.material.map.dispose();
-                }
-                object3d.material.dispose();
-            }
-        }
+			if (object3d.material) {
+				if (object3d.material.map) {
+					object3d.material.map.dispose();
+				}
+				object3d.material.dispose();
+			}
+		}
 
-        var customDestroyer = destroyers[syncType]
-        var shouldDefaultDestroy = !customDestroyer;
+		var customDestroyer = destroyers[syncType]
+		var shouldDefaultDestroy = !customDestroyer;
 
-        if (customDestroyer) {
+		if (customDestroyer) {
 
-            // returning true from a destroyer will additionally invoke the default destroyer
-            shouldDefaultDestroy = customDestroyer(object3d);
-        }
+			// returning true from a destroyer will additionally invoke the default destroyer
+			shouldDefaultDestroy = customDestroyer(object3d);
+		}
 
-        if (shouldDefaultDestroy) defaultDestroyer(object3d);
+		if (shouldDefaultDestroy) defaultDestroyer(object3d);
 
-        //remove from our local bookkeeping
-        delete objectForKey[key];
-        delete keyForUuid[object3d.uuid];
-    }
+		//remove from our local bookkeeping
+		delete objectForKey[key];
+		delete keyForUuid[object3d.uuid];
+	}
 
-    var exports = {
-        awake: awake,
-        instantiate: instantiate,
-        destroy: destroy,
-        type: 'SceneSync'
-    };
+	var exports = {
+		awake: awake,
+		instantiate: instantiate,
+		destroy: destroy,
+		type: 'SceneSync'
+	};
 
-    /**
-     * Interval at which an object's position/rotation/scale data is sent to Firebase,
-     * in milliseconds.
-     * @readonly
-     * @instance
-     * @member {number} autoSendRateMS
-     * @memberof module:altspace/utilities/behaviors.SceneSync
-     */
-    Object.defineProperty(exports, 'autoSendRateMS', {
-        get: function () { return autoSendRateMS; }
-    });
+	/**
+	 * Interval at which an object's position/rotation/scale data is sent to Firebase,
+	 * in milliseconds.
+	 * @readonly
+	 * @instance
+	 * @member {number} autoSendRateMS
+	 * @memberof module:altspace/utilities/behaviors.SceneSync
+	 */
+	Object.defineProperty(exports, 'autoSendRateMS', {
+		get: function () { return autoSendRateMS; }
+	});
 
-    /**
-     * True if this client is the master, false otherwise. Master is generally the client that 
-     * has been in the room the longest.
-     * @readonly
-     * @instance
-     * @member {boolean} isMasterClient
-     * @memberof module:altspace/utilities/behaviors.SceneSync
-     */
-    Object.defineProperty(exports, 'isMasterClient', {
-        get: function () { return masterClientId === clientId; }
-    });
+	/**
+	 * True if this client is the master, false otherwise. Master is generally the client that 
+	 * has been in the room the longest.
+	 * @readonly
+	 * @instance
+	 * @member {boolean} isMasterClient
+	 * @memberof module:altspace/utilities/behaviors.SceneSync
+	 */
+	Object.defineProperty(exports, 'isMasterClient', {
+		get: function () { return masterClientId === clientId; }
+	});
 
-    /**
-     * UUID of the current client. 
-     * @readonly
-     * @instance
-     * @member {string} clientId
-     * @memberof module:altspace/utilities/behaviors.SceneSync
-     */
-    Object.defineProperty(exports, 'clientId', {
-        get: function () { return clientId; }
-    });
+	/**
+	 * UUID of the current client. 
+	 * @readonly
+	 * @instance
+	 * @member {string} clientId
+	 * @memberof module:altspace/utilities/behaviors.SceneSync
+	 */
+	Object.defineProperty(exports, 'clientId', {
+		get: function () { return clientId; }
+	});
 
-    /**
-     * Firebase reference for the 'clients' child location. Can be used by app to listen
-     * to clients entering and leaving the room (but generally should not be modified by apps).
-     * @readonly
-     * @instance
-     * @member {Firebase} clientsRef
-     * @memberof module:altspace/utilities/behaviors.SceneSync
-     */
-    Object.defineProperty(exports, 'clientsRef', {
-        get: function () { return clientsRef; }
-    });
-    return exports;
+	/**
+	 * Firebase reference for the 'clients' child location. Can be used by app to listen
+	 * to clients entering and leaving the room (but generally should not be modified by apps).
+	 * @readonly
+	 * @instance
+	 * @member {Firebase} clientsRef
+	 * @memberof module:altspace/utilities/behaviors.SceneSync
+	 */
+	Object.defineProperty(exports, 'clientsRef', {
+		get: function () { return clientsRef; }
+	});
+	return exports;
 };
 
 window.altspace = window.altspace || {};
@@ -2521,21 +4822,21 @@ window.altspace.utilities.behaviors = window.altspace.utilities.behaviors || {};
  **/
 altspace.utilities.behaviors.Spin = function (config) {
 
-    config = config || {};
+	config = config || {};
 
-    if (config.speed === undefined) config.speed = 0.0001;
+	if (config.speed === undefined) config.speed = 0.0001;
 
-    var object3d;
+	var object3d;
 
-    function awake(o) {
-        object3d = o;
-    }
+	function awake(o) {
+		object3d = o;
+	}
 
-    function update(deltaTime) {
-        object3d.rotation.y += config.speed * deltaTime;
-    }
+	function update(deltaTime) {
+		object3d.rotation.y += config.speed * deltaTime;
+	}
 
-    return { awake: awake, update: update };
+	return { awake: awake, update: update };
 };
 
 window.altspace = window.altspace || {};
@@ -2543,57 +4844,57 @@ window.altspace.utilities = window.altspace.utilities || {};
 window.altspace.utilities.behaviors = window.altspace.utilities.behaviors || {};
 
 altspace.utilities.behaviors.TouchpadRotate = function (config) {
-    config = config || {};
+	config = config || {};
 
-    var object3d;
-    var scene;
+	var object3d;
+	var scene;
 
-    var startingRotation;
+	var startingRotation;
 
-    var activelyRotating = false;
+	var activelyRotating = false;
 
-    function awake(o, s) {
-        object3d = o;
-        scene = s;
+	function awake(o, s) {
+		object3d = o;
+		scene = s;
 
-        altspace.addEventListener('touchpadup', onTouchpadUp);
-        altspace.addEventListener('touchpaddown', onTouchpadDown);
-        altspace.addEventListener('touchpadmove', onTouchpadMove);
-    }
+		altspace.addEventListener('touchpadup', onTouchpadUp);
+		altspace.addEventListener('touchpaddown', onTouchpadDown);
+		altspace.addEventListener('touchpadmove', onTouchpadMove);
+	}
 
-    function onTouchpadUp(event) {
-        activelyRotating = false;
-    }
+	function onTouchpadUp(event) {
+		activelyRotating = false;
+	}
 
-    function onTouchpadDown(event) {
-        activelyRotating = true;
-        startingRotation = object3d.rotation.clone();
-    }
+	function onTouchpadDown(event) {
+		activelyRotating = true;
+		startingRotation = object3d.rotation.clone();
+	}
 
-    var lastDisplacementX = 0;
+	var lastDisplacementX = 0;
 
-    var runningCount = 5;
-    var runningAverageVelocityX = 0;
+	var runningCount = 5;
+	var runningAverageVelocityX = 0;
 
-    function onTouchpadMove(event) {
-        var deltaX = event.displacementX - lastDisplacementX;
-        object3d.rotation.set(startingRotation.x, startingRotation.y + event.displacementX / 300, startingRotation.z);
+	function onTouchpadMove(event) {
+		var deltaX = event.displacementX - lastDisplacementX;
+		object3d.rotation.set(startingRotation.x, startingRotation.y + event.displacementX / 300, startingRotation.z);
 
-        runningAverageVelocityX = ((runningAverageVelocityX * runningCount) + deltaX / 300) / (runningCount + 1);
-        lastDisplacementX = event.displacementX;
-    }
+		runningAverageVelocityX = ((runningAverageVelocityX * runningCount) + deltaX / 300) / (runningCount + 1);
+		lastDisplacementX = event.displacementX;
+	}
 
-    function update(deltaTime) {
-        if (!activelyRotating && Math.abs(runningAverageVelocityX) > 0.01) {
-            object3d.rotation.y += runningAverageVelocityX;
-            runningAverageVelocityX *= 0.97;
-        }
-    }
+	function update(deltaTime) {
+		if (!activelyRotating && Math.abs(runningAverageVelocityX) > 0.01) {
+			object3d.rotation.y += runningAverageVelocityX;
+			runningAverageVelocityX *= 0.97;
+		}
+	}
 
-    function start() {
-    }
+	function start() {
+	}
 
-    return { awake: awake, start: start, update: update };
+	return { awake: awake, start: start, update: update };
 };
 
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
@@ -7597,12 +9898,1290 @@ var Layout = (function () {
 window.altspace.utilities.behaviors.Layout = Layout;
 },{"babel-runtime/core-js/array/from":3,"babel-runtime/core-js/map":4,"babel-runtime/core-js/symbol":6,"babel-runtime/helpers/class-call-check":7,"babel-runtime/helpers/create-class":8,"babel/polyfill":9}]},{},[259]);
 
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/object/define-property"), __esModule: true };
+},{"core-js/library/fn/object/define-property":5}],2:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/promise"), __esModule: true };
+},{"core-js/library/fn/promise":6}],3:[function(require,module,exports){
+"use strict";
+
+exports["default"] = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+exports.__esModule = true;
+},{}],4:[function(require,module,exports){
+"use strict";
+
+var _Object$defineProperty = require("babel-runtime/core-js/object/define-property")["default"];
+
+exports["default"] = (function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+
+      _Object$defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+})();
+
+exports.__esModule = true;
+},{"babel-runtime/core-js/object/define-property":1}],5:[function(require,module,exports){
+var $ = require('../../modules/$');
+module.exports = function defineProperty(it, key, desc){
+  return $.setDesc(it, key, desc);
+};
+},{"../../modules/$":34}],6:[function(require,module,exports){
+require('../modules/es6.object.to-string');
+require('../modules/es6.string.iterator');
+require('../modules/web.dom.iterable');
+require('../modules/es6.promise');
+module.exports = require('../modules/$.core').Promise;
+},{"../modules/$.core":12,"../modules/es6.object.to-string":56,"../modules/es6.promise":57,"../modules/es6.string.iterator":58,"../modules/web.dom.iterable":59}],7:[function(require,module,exports){
+module.exports = function(it){
+  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
+  return it;
+};
+},{}],8:[function(require,module,exports){
+module.exports = function(){ /* empty */ };
+},{}],9:[function(require,module,exports){
+var isObject = require('./$.is-object');
+module.exports = function(it){
+  if(!isObject(it))throw TypeError(it + ' is not an object!');
+  return it;
+};
+},{"./$.is-object":27}],10:[function(require,module,exports){
+// getting tag from 19.1.3.6 Object.prototype.toString()
+var cof = require('./$.cof')
+  , TAG = require('./$.wks')('toStringTag')
+  // ES3 wrong here
+  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
+
+module.exports = function(it){
+  var O, T, B;
+  return it === undefined ? 'Undefined' : it === null ? 'Null'
+    // @@toStringTag case
+    : typeof (T = (O = Object(it))[TAG]) == 'string' ? T
+    // builtinTag case
+    : ARG ? cof(O)
+    // ES3 arguments fallback
+    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
+};
+},{"./$.cof":11,"./$.wks":53}],11:[function(require,module,exports){
+var toString = {}.toString;
+
+module.exports = function(it){
+  return toString.call(it).slice(8, -1);
+};
+},{}],12:[function(require,module,exports){
+var core = module.exports = {version: '1.2.6'};
+if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
+},{}],13:[function(require,module,exports){
+// optional / simple context binding
+var aFunction = require('./$.a-function');
+module.exports = function(fn, that, length){
+  aFunction(fn);
+  if(that === undefined)return fn;
+  switch(length){
+    case 1: return function(a){
+      return fn.call(that, a);
+    };
+    case 2: return function(a, b){
+      return fn.call(that, a, b);
+    };
+    case 3: return function(a, b, c){
+      return fn.call(that, a, b, c);
+    };
+  }
+  return function(/* ...args */){
+    return fn.apply(that, arguments);
+  };
+};
+},{"./$.a-function":7}],14:[function(require,module,exports){
+// 7.2.1 RequireObjectCoercible(argument)
+module.exports = function(it){
+  if(it == undefined)throw TypeError("Can't call method on  " + it);
+  return it;
+};
+},{}],15:[function(require,module,exports){
+// Thank's IE8 for his funny defineProperty
+module.exports = !require('./$.fails')(function(){
+  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
+});
+},{"./$.fails":18}],16:[function(require,module,exports){
+var isObject = require('./$.is-object')
+  , document = require('./$.global').document
+  // in old IE typeof document.createElement is 'object'
+  , is = isObject(document) && isObject(document.createElement);
+module.exports = function(it){
+  return is ? document.createElement(it) : {};
+};
+},{"./$.global":20,"./$.is-object":27}],17:[function(require,module,exports){
+var global    = require('./$.global')
+  , core      = require('./$.core')
+  , ctx       = require('./$.ctx')
+  , PROTOTYPE = 'prototype';
+
+var $export = function(type, name, source){
+  var IS_FORCED = type & $export.F
+    , IS_GLOBAL = type & $export.G
+    , IS_STATIC = type & $export.S
+    , IS_PROTO  = type & $export.P
+    , IS_BIND   = type & $export.B
+    , IS_WRAP   = type & $export.W
+    , exports   = IS_GLOBAL ? core : core[name] || (core[name] = {})
+    , target    = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE]
+    , key, own, out;
+  if(IS_GLOBAL)source = name;
+  for(key in source){
+    // contains in native
+    own = !IS_FORCED && target && key in target;
+    if(own && key in exports)continue;
+    // export native or passed
+    out = own ? target[key] : source[key];
+    // prevent global pollution for namespaces
+    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
+    // bind timers to global for call from export context
+    : IS_BIND && own ? ctx(out, global)
+    // wrap global constructors for prevent change them in library
+    : IS_WRAP && target[key] == out ? (function(C){
+      var F = function(param){
+        return this instanceof C ? new C(param) : C(param);
+      };
+      F[PROTOTYPE] = C[PROTOTYPE];
+      return F;
+    // make static versions for prototype methods
+    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
+    if(IS_PROTO)(exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
+  }
+};
+// type bitmap
+$export.F = 1;  // forced
+$export.G = 2;  // global
+$export.S = 4;  // static
+$export.P = 8;  // proto
+$export.B = 16; // bind
+$export.W = 32; // wrap
+module.exports = $export;
+},{"./$.core":12,"./$.ctx":13,"./$.global":20}],18:[function(require,module,exports){
+module.exports = function(exec){
+  try {
+    return !!exec();
+  } catch(e){
+    return true;
+  }
+};
+},{}],19:[function(require,module,exports){
+var ctx         = require('./$.ctx')
+  , call        = require('./$.iter-call')
+  , isArrayIter = require('./$.is-array-iter')
+  , anObject    = require('./$.an-object')
+  , toLength    = require('./$.to-length')
+  , getIterFn   = require('./core.get-iterator-method');
+module.exports = function(iterable, entries, fn, that){
+  var iterFn = getIterFn(iterable)
+    , f      = ctx(fn, that, entries ? 2 : 1)
+    , index  = 0
+    , length, step, iterator;
+  if(typeof iterFn != 'function')throw TypeError(iterable + ' is not iterable!');
+  // fast case for arrays with default iterator
+  if(isArrayIter(iterFn))for(length = toLength(iterable.length); length > index; index++){
+    entries ? f(anObject(step = iterable[index])[0], step[1]) : f(iterable[index]);
+  } else for(iterator = iterFn.call(iterable); !(step = iterator.next()).done; ){
+    call(iterator, f, step.value, entries);
+  }
+};
+},{"./$.an-object":9,"./$.ctx":13,"./$.is-array-iter":26,"./$.iter-call":28,"./$.to-length":51,"./core.get-iterator-method":54}],20:[function(require,module,exports){
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
+if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
+},{}],21:[function(require,module,exports){
+var hasOwnProperty = {}.hasOwnProperty;
+module.exports = function(it, key){
+  return hasOwnProperty.call(it, key);
+};
+},{}],22:[function(require,module,exports){
+var $          = require('./$')
+  , createDesc = require('./$.property-desc');
+module.exports = require('./$.descriptors') ? function(object, key, value){
+  return $.setDesc(object, key, createDesc(1, value));
+} : function(object, key, value){
+  object[key] = value;
+  return object;
+};
+},{"./$":34,"./$.descriptors":15,"./$.property-desc":37}],23:[function(require,module,exports){
+module.exports = require('./$.global').document && document.documentElement;
+},{"./$.global":20}],24:[function(require,module,exports){
+// fast apply, http://jsperf.lnkit.com/fast-apply/5
+module.exports = function(fn, args, that){
+  var un = that === undefined;
+  switch(args.length){
+    case 0: return un ? fn()
+                      : fn.call(that);
+    case 1: return un ? fn(args[0])
+                      : fn.call(that, args[0]);
+    case 2: return un ? fn(args[0], args[1])
+                      : fn.call(that, args[0], args[1]);
+    case 3: return un ? fn(args[0], args[1], args[2])
+                      : fn.call(that, args[0], args[1], args[2]);
+    case 4: return un ? fn(args[0], args[1], args[2], args[3])
+                      : fn.call(that, args[0], args[1], args[2], args[3]);
+  } return              fn.apply(that, args);
+};
+},{}],25:[function(require,module,exports){
+// fallback for non-array-like ES3 and non-enumerable old V8 strings
+var cof = require('./$.cof');
+module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
+  return cof(it) == 'String' ? it.split('') : Object(it);
+};
+},{"./$.cof":11}],26:[function(require,module,exports){
+// check on default Array iterator
+var Iterators  = require('./$.iterators')
+  , ITERATOR   = require('./$.wks')('iterator')
+  , ArrayProto = Array.prototype;
+
+module.exports = function(it){
+  return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
+};
+},{"./$.iterators":33,"./$.wks":53}],27:[function(require,module,exports){
+module.exports = function(it){
+  return typeof it === 'object' ? it !== null : typeof it === 'function';
+};
+},{}],28:[function(require,module,exports){
+// call something on iterator step with safe closing on error
+var anObject = require('./$.an-object');
+module.exports = function(iterator, fn, value, entries){
+  try {
+    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
+  // 7.4.6 IteratorClose(iterator, completion)
+  } catch(e){
+    var ret = iterator['return'];
+    if(ret !== undefined)anObject(ret.call(iterator));
+    throw e;
+  }
+};
+},{"./$.an-object":9}],29:[function(require,module,exports){
+'use strict';
+var $              = require('./$')
+  , descriptor     = require('./$.property-desc')
+  , setToStringTag = require('./$.set-to-string-tag')
+  , IteratorPrototype = {};
+
+// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
+require('./$.hide')(IteratorPrototype, require('./$.wks')('iterator'), function(){ return this; });
+
+module.exports = function(Constructor, NAME, next){
+  Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
+  setToStringTag(Constructor, NAME + ' Iterator');
+};
+},{"./$":34,"./$.hide":22,"./$.property-desc":37,"./$.set-to-string-tag":43,"./$.wks":53}],30:[function(require,module,exports){
+'use strict';
+var LIBRARY        = require('./$.library')
+  , $export        = require('./$.export')
+  , redefine       = require('./$.redefine')
+  , hide           = require('./$.hide')
+  , has            = require('./$.has')
+  , Iterators      = require('./$.iterators')
+  , $iterCreate    = require('./$.iter-create')
+  , setToStringTag = require('./$.set-to-string-tag')
+  , getProto       = require('./$').getProto
+  , ITERATOR       = require('./$.wks')('iterator')
+  , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
+  , FF_ITERATOR    = '@@iterator'
+  , KEYS           = 'keys'
+  , VALUES         = 'values';
+
+var returnThis = function(){ return this; };
+
+module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED){
+  $iterCreate(Constructor, NAME, next);
+  var getMethod = function(kind){
+    if(!BUGGY && kind in proto)return proto[kind];
+    switch(kind){
+      case KEYS: return function keys(){ return new Constructor(this, kind); };
+      case VALUES: return function values(){ return new Constructor(this, kind); };
+    } return function entries(){ return new Constructor(this, kind); };
+  };
+  var TAG        = NAME + ' Iterator'
+    , DEF_VALUES = DEFAULT == VALUES
+    , VALUES_BUG = false
+    , proto      = Base.prototype
+    , $native    = proto[ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT]
+    , $default   = $native || getMethod(DEFAULT)
+    , methods, key;
+  // Fix native
+  if($native){
+    var IteratorPrototype = getProto($default.call(new Base));
+    // Set @@toStringTag to native iterators
+    setToStringTag(IteratorPrototype, TAG, true);
+    // FF fix
+    if(!LIBRARY && has(proto, FF_ITERATOR))hide(IteratorPrototype, ITERATOR, returnThis);
+    // fix Array#{values, @@iterator}.name in V8 / FF
+    if(DEF_VALUES && $native.name !== VALUES){
+      VALUES_BUG = true;
+      $default = function values(){ return $native.call(this); };
+    }
+  }
+  // Define iterator
+  if((!LIBRARY || FORCED) && (BUGGY || VALUES_BUG || !proto[ITERATOR])){
+    hide(proto, ITERATOR, $default);
+  }
+  // Plug for library
+  Iterators[NAME] = $default;
+  Iterators[TAG]  = returnThis;
+  if(DEFAULT){
+    methods = {
+      values:  DEF_VALUES  ? $default : getMethod(VALUES),
+      keys:    IS_SET      ? $default : getMethod(KEYS),
+      entries: !DEF_VALUES ? $default : getMethod('entries')
+    };
+    if(FORCED)for(key in methods){
+      if(!(key in proto))redefine(proto, key, methods[key]);
+    } else $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
+  }
+  return methods;
+};
+},{"./$":34,"./$.export":17,"./$.has":21,"./$.hide":22,"./$.iter-create":29,"./$.iterators":33,"./$.library":35,"./$.redefine":39,"./$.set-to-string-tag":43,"./$.wks":53}],31:[function(require,module,exports){
+var ITERATOR     = require('./$.wks')('iterator')
+  , SAFE_CLOSING = false;
+
+try {
+  var riter = [7][ITERATOR]();
+  riter['return'] = function(){ SAFE_CLOSING = true; };
+  Array.from(riter, function(){ throw 2; });
+} catch(e){ /* empty */ }
+
+module.exports = function(exec, skipClosing){
+  if(!skipClosing && !SAFE_CLOSING)return false;
+  var safe = false;
+  try {
+    var arr  = [7]
+      , iter = arr[ITERATOR]();
+    iter.next = function(){ safe = true; };
+    arr[ITERATOR] = function(){ return iter; };
+    exec(arr);
+  } catch(e){ /* empty */ }
+  return safe;
+};
+},{"./$.wks":53}],32:[function(require,module,exports){
+module.exports = function(done, value){
+  return {value: value, done: !!done};
+};
+},{}],33:[function(require,module,exports){
+module.exports = {};
+},{}],34:[function(require,module,exports){
+var $Object = Object;
+module.exports = {
+  create:     $Object.create,
+  getProto:   $Object.getPrototypeOf,
+  isEnum:     {}.propertyIsEnumerable,
+  getDesc:    $Object.getOwnPropertyDescriptor,
+  setDesc:    $Object.defineProperty,
+  setDescs:   $Object.defineProperties,
+  getKeys:    $Object.keys,
+  getNames:   $Object.getOwnPropertyNames,
+  getSymbols: $Object.getOwnPropertySymbols,
+  each:       [].forEach
+};
+},{}],35:[function(require,module,exports){
+module.exports = true;
+},{}],36:[function(require,module,exports){
+var global    = require('./$.global')
+  , macrotask = require('./$.task').set
+  , Observer  = global.MutationObserver || global.WebKitMutationObserver
+  , process   = global.process
+  , Promise   = global.Promise
+  , isNode    = require('./$.cof')(process) == 'process'
+  , head, last, notify;
+
+var flush = function(){
+  var parent, domain, fn;
+  if(isNode && (parent = process.domain)){
+    process.domain = null;
+    parent.exit();
+  }
+  while(head){
+    domain = head.domain;
+    fn     = head.fn;
+    if(domain)domain.enter();
+    fn(); // <- currently we use it only for Promise - try / catch not required
+    if(domain)domain.exit();
+    head = head.next;
+  } last = undefined;
+  if(parent)parent.enter();
+};
+
+// Node.js
+if(isNode){
+  notify = function(){
+    process.nextTick(flush);
+  };
+// browsers with MutationObserver
+} else if(Observer){
+  var toggle = 1
+    , node   = document.createTextNode('');
+  new Observer(flush).observe(node, {characterData: true}); // eslint-disable-line no-new
+  notify = function(){
+    node.data = toggle = -toggle;
+  };
+// environments with maybe non-completely correct, but existent Promise
+} else if(Promise && Promise.resolve){
+  notify = function(){
+    Promise.resolve().then(flush);
+  };
+// for other environments - macrotask based on:
+// - setImmediate
+// - MessageChannel
+// - window.postMessag
+// - onreadystatechange
+// - setTimeout
+} else {
+  notify = function(){
+    // strange IE + webpack dev server bug - use .call(global)
+    macrotask.call(global, flush);
+  };
+}
+
+module.exports = function asap(fn){
+  var task = {fn: fn, next: undefined, domain: isNode && process.domain};
+  if(last)last.next = task;
+  if(!head){
+    head = task;
+    notify();
+  } last = task;
+};
+},{"./$.cof":11,"./$.global":20,"./$.task":48}],37:[function(require,module,exports){
+module.exports = function(bitmap, value){
+  return {
+    enumerable  : !(bitmap & 1),
+    configurable: !(bitmap & 2),
+    writable    : !(bitmap & 4),
+    value       : value
+  };
+};
+},{}],38:[function(require,module,exports){
+var redefine = require('./$.redefine');
+module.exports = function(target, src){
+  for(var key in src)redefine(target, key, src[key]);
+  return target;
+};
+},{"./$.redefine":39}],39:[function(require,module,exports){
+module.exports = require('./$.hide');
+},{"./$.hide":22}],40:[function(require,module,exports){
+// 7.2.9 SameValue(x, y)
+module.exports = Object.is || function is(x, y){
+  return x === y ? x !== 0 || 1 / x === 1 / y : x != x && y != y;
+};
+},{}],41:[function(require,module,exports){
+// Works with __proto__ only. Old v8 can't work with null proto objects.
+/* eslint-disable no-proto */
+var getDesc  = require('./$').getDesc
+  , isObject = require('./$.is-object')
+  , anObject = require('./$.an-object');
+var check = function(O, proto){
+  anObject(O);
+  if(!isObject(proto) && proto !== null)throw TypeError(proto + ": can't set as prototype!");
+};
+module.exports = {
+  set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
+    function(test, buggy, set){
+      try {
+        set = require('./$.ctx')(Function.call, getDesc(Object.prototype, '__proto__').set, 2);
+        set(test, []);
+        buggy = !(test instanceof Array);
+      } catch(e){ buggy = true; }
+      return function setPrototypeOf(O, proto){
+        check(O, proto);
+        if(buggy)O.__proto__ = proto;
+        else set(O, proto);
+        return O;
+      };
+    }({}, false) : undefined),
+  check: check
+};
+},{"./$":34,"./$.an-object":9,"./$.ctx":13,"./$.is-object":27}],42:[function(require,module,exports){
+'use strict';
+var core        = require('./$.core')
+  , $           = require('./$')
+  , DESCRIPTORS = require('./$.descriptors')
+  , SPECIES     = require('./$.wks')('species');
+
+module.exports = function(KEY){
+  var C = core[KEY];
+  if(DESCRIPTORS && C && !C[SPECIES])$.setDesc(C, SPECIES, {
+    configurable: true,
+    get: function(){ return this; }
+  });
+};
+},{"./$":34,"./$.core":12,"./$.descriptors":15,"./$.wks":53}],43:[function(require,module,exports){
+var def = require('./$').setDesc
+  , has = require('./$.has')
+  , TAG = require('./$.wks')('toStringTag');
+
+module.exports = function(it, tag, stat){
+  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
+};
+},{"./$":34,"./$.has":21,"./$.wks":53}],44:[function(require,module,exports){
+var global = require('./$.global')
+  , SHARED = '__core-js_shared__'
+  , store  = global[SHARED] || (global[SHARED] = {});
+module.exports = function(key){
+  return store[key] || (store[key] = {});
+};
+},{"./$.global":20}],45:[function(require,module,exports){
+// 7.3.20 SpeciesConstructor(O, defaultConstructor)
+var anObject  = require('./$.an-object')
+  , aFunction = require('./$.a-function')
+  , SPECIES   = require('./$.wks')('species');
+module.exports = function(O, D){
+  var C = anObject(O).constructor, S;
+  return C === undefined || (S = anObject(C)[SPECIES]) == undefined ? D : aFunction(S);
+};
+},{"./$.a-function":7,"./$.an-object":9,"./$.wks":53}],46:[function(require,module,exports){
+module.exports = function(it, Constructor, name){
+  if(!(it instanceof Constructor))throw TypeError(name + ": use the 'new' operator!");
+  return it;
+};
+},{}],47:[function(require,module,exports){
+var toInteger = require('./$.to-integer')
+  , defined   = require('./$.defined');
+// true  -> String#at
+// false -> String#codePointAt
+module.exports = function(TO_STRING){
+  return function(that, pos){
+    var s = String(defined(that))
+      , i = toInteger(pos)
+      , l = s.length
+      , a, b;
+    if(i < 0 || i >= l)return TO_STRING ? '' : undefined;
+    a = s.charCodeAt(i);
+    return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff
+      ? TO_STRING ? s.charAt(i) : a
+      : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
+  };
+};
+},{"./$.defined":14,"./$.to-integer":49}],48:[function(require,module,exports){
+var ctx                = require('./$.ctx')
+  , invoke             = require('./$.invoke')
+  , html               = require('./$.html')
+  , cel                = require('./$.dom-create')
+  , global             = require('./$.global')
+  , process            = global.process
+  , setTask            = global.setImmediate
+  , clearTask          = global.clearImmediate
+  , MessageChannel     = global.MessageChannel
+  , counter            = 0
+  , queue              = {}
+  , ONREADYSTATECHANGE = 'onreadystatechange'
+  , defer, channel, port;
+var run = function(){
+  var id = +this;
+  if(queue.hasOwnProperty(id)){
+    var fn = queue[id];
+    delete queue[id];
+    fn();
+  }
+};
+var listner = function(event){
+  run.call(event.data);
+};
+// Node.js 0.9+ & IE10+ has setImmediate, otherwise:
+if(!setTask || !clearTask){
+  setTask = function setImmediate(fn){
+    var args = [], i = 1;
+    while(arguments.length > i)args.push(arguments[i++]);
+    queue[++counter] = function(){
+      invoke(typeof fn == 'function' ? fn : Function(fn), args);
+    };
+    defer(counter);
+    return counter;
+  };
+  clearTask = function clearImmediate(id){
+    delete queue[id];
+  };
+  // Node.js 0.8-
+  if(require('./$.cof')(process) == 'process'){
+    defer = function(id){
+      process.nextTick(ctx(run, id, 1));
+    };
+  // Browsers with MessageChannel, includes WebWorkers
+  } else if(MessageChannel){
+    channel = new MessageChannel;
+    port    = channel.port2;
+    channel.port1.onmessage = listner;
+    defer = ctx(port.postMessage, port, 1);
+  // Browsers with postMessage, skip WebWorkers
+  // IE8 has postMessage, but it's sync & typeof its postMessage is 'object'
+  } else if(global.addEventListener && typeof postMessage == 'function' && !global.importScripts){
+    defer = function(id){
+      global.postMessage(id + '', '*');
+    };
+    global.addEventListener('message', listner, false);
+  // IE8-
+  } else if(ONREADYSTATECHANGE in cel('script')){
+    defer = function(id){
+      html.appendChild(cel('script'))[ONREADYSTATECHANGE] = function(){
+        html.removeChild(this);
+        run.call(id);
+      };
+    };
+  // Rest old browsers
+  } else {
+    defer = function(id){
+      setTimeout(ctx(run, id, 1), 0);
+    };
+  }
+}
+module.exports = {
+  set:   setTask,
+  clear: clearTask
+};
+},{"./$.cof":11,"./$.ctx":13,"./$.dom-create":16,"./$.global":20,"./$.html":23,"./$.invoke":24}],49:[function(require,module,exports){
+// 7.1.4 ToInteger
+var ceil  = Math.ceil
+  , floor = Math.floor;
+module.exports = function(it){
+  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
+};
+},{}],50:[function(require,module,exports){
+// to indexed object, toObject with fallback for non-array-like ES3 strings
+var IObject = require('./$.iobject')
+  , defined = require('./$.defined');
+module.exports = function(it){
+  return IObject(defined(it));
+};
+},{"./$.defined":14,"./$.iobject":25}],51:[function(require,module,exports){
+// 7.1.15 ToLength
+var toInteger = require('./$.to-integer')
+  , min       = Math.min;
+module.exports = function(it){
+  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
+};
+},{"./$.to-integer":49}],52:[function(require,module,exports){
+var id = 0
+  , px = Math.random();
+module.exports = function(key){
+  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+};
+},{}],53:[function(require,module,exports){
+var store  = require('./$.shared')('wks')
+  , uid    = require('./$.uid')
+  , Symbol = require('./$.global').Symbol;
+module.exports = function(name){
+  return store[name] || (store[name] =
+    Symbol && Symbol[name] || (Symbol || uid)('Symbol.' + name));
+};
+},{"./$.global":20,"./$.shared":44,"./$.uid":52}],54:[function(require,module,exports){
+var classof   = require('./$.classof')
+  , ITERATOR  = require('./$.wks')('iterator')
+  , Iterators = require('./$.iterators');
+module.exports = require('./$.core').getIteratorMethod = function(it){
+  if(it != undefined)return it[ITERATOR]
+    || it['@@iterator']
+    || Iterators[classof(it)];
+};
+},{"./$.classof":10,"./$.core":12,"./$.iterators":33,"./$.wks":53}],55:[function(require,module,exports){
+'use strict';
+var addToUnscopables = require('./$.add-to-unscopables')
+  , step             = require('./$.iter-step')
+  , Iterators        = require('./$.iterators')
+  , toIObject        = require('./$.to-iobject');
+
+// 22.1.3.4 Array.prototype.entries()
+// 22.1.3.13 Array.prototype.keys()
+// 22.1.3.29 Array.prototype.values()
+// 22.1.3.30 Array.prototype[@@iterator]()
+module.exports = require('./$.iter-define')(Array, 'Array', function(iterated, kind){
+  this._t = toIObject(iterated); // target
+  this._i = 0;                   // next index
+  this._k = kind;                // kind
+// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
+}, function(){
+  var O     = this._t
+    , kind  = this._k
+    , index = this._i++;
+  if(!O || index >= O.length){
+    this._t = undefined;
+    return step(1);
+  }
+  if(kind == 'keys'  )return step(0, index);
+  if(kind == 'values')return step(0, O[index]);
+  return step(0, [index, O[index]]);
+}, 'values');
+
+// argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
+Iterators.Arguments = Iterators.Array;
+
+addToUnscopables('keys');
+addToUnscopables('values');
+addToUnscopables('entries');
+},{"./$.add-to-unscopables":8,"./$.iter-define":30,"./$.iter-step":32,"./$.iterators":33,"./$.to-iobject":50}],56:[function(require,module,exports){
+
+},{}],57:[function(require,module,exports){
+'use strict';
+var $          = require('./$')
+  , LIBRARY    = require('./$.library')
+  , global     = require('./$.global')
+  , ctx        = require('./$.ctx')
+  , classof    = require('./$.classof')
+  , $export    = require('./$.export')
+  , isObject   = require('./$.is-object')
+  , anObject   = require('./$.an-object')
+  , aFunction  = require('./$.a-function')
+  , strictNew  = require('./$.strict-new')
+  , forOf      = require('./$.for-of')
+  , setProto   = require('./$.set-proto').set
+  , same       = require('./$.same-value')
+  , SPECIES    = require('./$.wks')('species')
+  , speciesConstructor = require('./$.species-constructor')
+  , asap       = require('./$.microtask')
+  , PROMISE    = 'Promise'
+  , process    = global.process
+  , isNode     = classof(process) == 'process'
+  , P          = global[PROMISE]
+  , Wrapper;
+
+var testResolve = function(sub){
+  var test = new P(function(){});
+  if(sub)test.constructor = Object;
+  return P.resolve(test) === test;
+};
+
+var USE_NATIVE = function(){
+  var works = false;
+  function P2(x){
+    var self = new P(x);
+    setProto(self, P2.prototype);
+    return self;
+  }
+  try {
+    works = P && P.resolve && testResolve();
+    setProto(P2, P);
+    P2.prototype = $.create(P.prototype, {constructor: {value: P2}});
+    // actual Firefox has broken subclass support, test that
+    if(!(P2.resolve(5).then(function(){}) instanceof P2)){
+      works = false;
+    }
+    // actual V8 bug, https://code.google.com/p/v8/issues/detail?id=4162
+    if(works && require('./$.descriptors')){
+      var thenableThenGotten = false;
+      P.resolve($.setDesc({}, 'then', {
+        get: function(){ thenableThenGotten = true; }
+      }));
+      works = thenableThenGotten;
+    }
+  } catch(e){ works = false; }
+  return works;
+}();
+
+// helpers
+var sameConstructor = function(a, b){
+  // library wrapper special case
+  if(LIBRARY && a === P && b === Wrapper)return true;
+  return same(a, b);
+};
+var getConstructor = function(C){
+  var S = anObject(C)[SPECIES];
+  return S != undefined ? S : C;
+};
+var isThenable = function(it){
+  var then;
+  return isObject(it) && typeof (then = it.then) == 'function' ? then : false;
+};
+var PromiseCapability = function(C){
+  var resolve, reject;
+  this.promise = new C(function($$resolve, $$reject){
+    if(resolve !== undefined || reject !== undefined)throw TypeError('Bad Promise constructor');
+    resolve = $$resolve;
+    reject  = $$reject;
+  });
+  this.resolve = aFunction(resolve),
+  this.reject  = aFunction(reject)
+};
+var perform = function(exec){
+  try {
+    exec();
+  } catch(e){
+    return {error: e};
+  }
+};
+var notify = function(record, isReject){
+  if(record.n)return;
+  record.n = true;
+  var chain = record.c;
+  asap(function(){
+    var value = record.v
+      , ok    = record.s == 1
+      , i     = 0;
+    var run = function(reaction){
+      var handler = ok ? reaction.ok : reaction.fail
+        , resolve = reaction.resolve
+        , reject  = reaction.reject
+        , result, then;
+      try {
+        if(handler){
+          if(!ok)record.h = true;
+          result = handler === true ? value : handler(value);
+          if(result === reaction.promise){
+            reject(TypeError('Promise-chain cycle'));
+          } else if(then = isThenable(result)){
+            then.call(result, resolve, reject);
+          } else resolve(result);
+        } else reject(value);
+      } catch(e){
+        reject(e);
+      }
+    };
+    while(chain.length > i)run(chain[i++]); // variable length - can't use forEach
+    chain.length = 0;
+    record.n = false;
+    if(isReject)setTimeout(function(){
+      var promise = record.p
+        , handler, console;
+      if(isUnhandled(promise)){
+        if(isNode){
+          process.emit('unhandledRejection', value, promise);
+        } else if(handler = global.onunhandledrejection){
+          handler({promise: promise, reason: value});
+        } else if((console = global.console) && console.error){
+          console.error('Unhandled promise rejection', value);
+        }
+      } record.a = undefined;
+    }, 1);
+  });
+};
+var isUnhandled = function(promise){
+  var record = promise._d
+    , chain  = record.a || record.c
+    , i      = 0
+    , reaction;
+  if(record.h)return false;
+  while(chain.length > i){
+    reaction = chain[i++];
+    if(reaction.fail || !isUnhandled(reaction.promise))return false;
+  } return true;
+};
+var $reject = function(value){
+  var record = this;
+  if(record.d)return;
+  record.d = true;
+  record = record.r || record; // unwrap
+  record.v = value;
+  record.s = 2;
+  record.a = record.c.slice();
+  notify(record, true);
+};
+var $resolve = function(value){
+  var record = this
+    , then;
+  if(record.d)return;
+  record.d = true;
+  record = record.r || record; // unwrap
+  try {
+    if(record.p === value)throw TypeError("Promise can't be resolved itself");
+    if(then = isThenable(value)){
+      asap(function(){
+        var wrapper = {r: record, d: false}; // wrap
+        try {
+          then.call(value, ctx($resolve, wrapper, 1), ctx($reject, wrapper, 1));
+        } catch(e){
+          $reject.call(wrapper, e);
+        }
+      });
+    } else {
+      record.v = value;
+      record.s = 1;
+      notify(record, false);
+    }
+  } catch(e){
+    $reject.call({r: record, d: false}, e); // wrap
+  }
+};
+
+// constructor polyfill
+if(!USE_NATIVE){
+  // 25.4.3.1 Promise(executor)
+  P = function Promise(executor){
+    aFunction(executor);
+    var record = this._d = {
+      p: strictNew(this, P, PROMISE),         // <- promise
+      c: [],                                  // <- awaiting reactions
+      a: undefined,                           // <- checked in isUnhandled reactions
+      s: 0,                                   // <- state
+      d: false,                               // <- done
+      v: undefined,                           // <- value
+      h: false,                               // <- handled rejection
+      n: false                                // <- notify
+    };
+    try {
+      executor(ctx($resolve, record, 1), ctx($reject, record, 1));
+    } catch(err){
+      $reject.call(record, err);
+    }
+  };
+  require('./$.redefine-all')(P.prototype, {
+    // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
+    then: function then(onFulfilled, onRejected){
+      var reaction = new PromiseCapability(speciesConstructor(this, P))
+        , promise  = reaction.promise
+        , record   = this._d;
+      reaction.ok   = typeof onFulfilled == 'function' ? onFulfilled : true;
+      reaction.fail = typeof onRejected == 'function' && onRejected;
+      record.c.push(reaction);
+      if(record.a)record.a.push(reaction);
+      if(record.s)notify(record, false);
+      return promise;
+    },
+    // 25.4.5.1 Promise.prototype.catch(onRejected)
+    'catch': function(onRejected){
+      return this.then(undefined, onRejected);
+    }
+  });
+}
+
+$export($export.G + $export.W + $export.F * !USE_NATIVE, {Promise: P});
+require('./$.set-to-string-tag')(P, PROMISE);
+require('./$.set-species')(PROMISE);
+Wrapper = require('./$.core')[PROMISE];
+
+// statics
+$export($export.S + $export.F * !USE_NATIVE, PROMISE, {
+  // 25.4.4.5 Promise.reject(r)
+  reject: function reject(r){
+    var capability = new PromiseCapability(this)
+      , $$reject   = capability.reject;
+    $$reject(r);
+    return capability.promise;
+  }
+});
+$export($export.S + $export.F * (!USE_NATIVE || testResolve(true)), PROMISE, {
+  // 25.4.4.6 Promise.resolve(x)
+  resolve: function resolve(x){
+    // instanceof instead of internal slot check because we should fix it without replacement native Promise core
+    if(x instanceof P && sameConstructor(x.constructor, this))return x;
+    var capability = new PromiseCapability(this)
+      , $$resolve  = capability.resolve;
+    $$resolve(x);
+    return capability.promise;
+  }
+});
+$export($export.S + $export.F * !(USE_NATIVE && require('./$.iter-detect')(function(iter){
+  P.all(iter)['catch'](function(){});
+})), PROMISE, {
+  // 25.4.4.1 Promise.all(iterable)
+  all: function all(iterable){
+    var C          = getConstructor(this)
+      , capability = new PromiseCapability(C)
+      , resolve    = capability.resolve
+      , reject     = capability.reject
+      , values     = [];
+    var abrupt = perform(function(){
+      forOf(iterable, false, values.push, values);
+      var remaining = values.length
+        , results   = Array(remaining);
+      if(remaining)$.each.call(values, function(promise, index){
+        var alreadyCalled = false;
+        C.resolve(promise).then(function(value){
+          if(alreadyCalled)return;
+          alreadyCalled = true;
+          results[index] = value;
+          --remaining || resolve(results);
+        }, reject);
+      });
+      else resolve(results);
+    });
+    if(abrupt)reject(abrupt.error);
+    return capability.promise;
+  },
+  // 25.4.4.4 Promise.race(iterable)
+  race: function race(iterable){
+    var C          = getConstructor(this)
+      , capability = new PromiseCapability(C)
+      , reject     = capability.reject;
+    var abrupt = perform(function(){
+      forOf(iterable, false, function(promise){
+        C.resolve(promise).then(capability.resolve, reject);
+      });
+    });
+    if(abrupt)reject(abrupt.error);
+    return capability.promise;
+  }
+});
+},{"./$":34,"./$.a-function":7,"./$.an-object":9,"./$.classof":10,"./$.core":12,"./$.ctx":13,"./$.descriptors":15,"./$.export":17,"./$.for-of":19,"./$.global":20,"./$.is-object":27,"./$.iter-detect":31,"./$.library":35,"./$.microtask":36,"./$.redefine-all":38,"./$.same-value":40,"./$.set-proto":41,"./$.set-species":42,"./$.set-to-string-tag":43,"./$.species-constructor":45,"./$.strict-new":46,"./$.wks":53}],58:[function(require,module,exports){
+'use strict';
+var $at  = require('./$.string-at')(true);
+
+// 21.1.3.27 String.prototype[@@iterator]()
+require('./$.iter-define')(String, 'String', function(iterated){
+  this._t = String(iterated); // target
+  this._i = 0;                // next index
+// 21.1.5.2.1 %StringIteratorPrototype%.next()
+}, function(){
+  var O     = this._t
+    , index = this._i
+    , point;
+  if(index >= O.length)return {value: undefined, done: true};
+  point = $at(O, index);
+  this._i += point.length;
+  return {value: point, done: false};
+});
+},{"./$.iter-define":30,"./$.string-at":47}],59:[function(require,module,exports){
+require('./es6.array.iterator');
+var Iterators = require('./$.iterators');
+Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
+},{"./$.iterators":33,"./es6.array.iterator":55}],60:[function(require,module,exports){
+'use strict';
+
+// Returns a Promise that resovles static when a steamvr controller is found
+
+var _createClass = require('babel-runtime/helpers/create-class')['default'];
+
+var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+
+var _Promise = require('babel-runtime/core-js/promise')['default'];
+
+function getController(hand) {
+	var findGamepad = function findGamepad(resolve, reject) {
+		var gamepad = altspace.getGamepads().find(function (g) {
+			return g.mapping === 'steamvr' && g.hand === hand;
+		});
+		if (gamepad) {
+			console.log("SteamVR input device found", gamepad);
+			resolve(gamepad);
+		} else {
+			console.log("SteamVR input device not found trying again in 500ms...");
+			setTimeout(findGamepad, 500, resolve, reject);
+		}
+	};
+
+	return new _Promise(findGamepad);
+}
+
+/**
+ * The SteamVRInput behavior manages SteamVR input devices. It should be added
+ * to the ThreeJS scene and is required to use [SteamVRTrackedObject]{@link module:altspace/utilities/behaviors.SteamVRTrackedObject}
+ *
+ * @class SteamVRInput
+ * @memberof module:altspace/utilities/behaviors
+ *
+ * @prop {Gamepad} leftController the left SteamVR [Gamepad]{@link module:altspace~Gamepad} or undefined if one has not yet been found
+ * @prop {Gamepad} rightController the right SteamVR [Gamepad]{@link module:altspace~Gamepad} or undefined if one has not yet been found
+ * @prop {Gamepad} firstController the first SteamVR [Gamepad]{@link module:altspace~Gamepad}  or undefined if none have yet been found
+ *
+ * @prop {Promise} leftControllerPromise a promise that resolves once the left SteamVR input device is found
+ * @prop {Promise} rightControllerPromise a promise that resolves once the right SteamVR input device is found
+ * @prop {Promise} firstControllerPromise a promise that resolves once any SteamVR input device is found
+ */
+
+var SteamVRInputBehavior = (function () {
+	function SteamVRInputBehavior() {
+		_classCallCheck(this, SteamVRInputBehavior);
+
+		this.type = 'SteamVRInput';
+	}
+
+	_createClass(SteamVRInputBehavior, [{
+		key: 'awake',
+		value: function awake() {
+			var _this = this;
+
+			this.leftControllerPromise = getController(SteamVRInputBehavior.LEFT_CONTROLLER);
+			this.rightControllerPromise = getController(SteamVRInputBehavior.RIGHT_CONTROLLER);
+			this.firstControllerPromise = _Promise.race([this.leftControllerPromise, this.rightControllerPromise]);
+
+			this.leftControllerPromise.then(function (controller) {
+				_this.leftController = controller;
+			});
+			this.rightControllerPromise.then(function (controller) {
+				_this.rightController = controller;
+			});
+			this.firstControllerPromise.then(function (controller) {
+				_this.firstController = controller;
+
+				var blockedAxes = controller.axes.map(function () {
+					return false;
+				});
+				var blockedButtons = controller.buttons.map(function () {
+					return false;
+				});
+
+				blockedButtons[SteamVRInputBehavior.BUTTON_TRIGGER] = true;
+				blockedButtons[SteamVRInputBehavior.BUTTON_TOUCHPAD] = true;
+
+				controller.preventDefault(blockedAxes, blockedButtons);
+			});
+		}
+	}]);
+
+	return SteamVRInputBehavior;
+})();
+
+SteamVRInputBehavior.BUTTON_TRIGGER = 0;
+SteamVRInputBehavior.BUTTON_GRIP = 1;
+SteamVRInputBehavior.BUTTON_TOUCHPAD = 2;
+SteamVRInputBehavior.BUTTON_DPAD_UP = 3;
+SteamVRInputBehavior.BUTTON_DPAD_RIGHT = 4;
+SteamVRInputBehavior.BUTTON_DPAD_DOWN = 5;
+SteamVRInputBehavior.BUTTON_DPAD_LEFT = 6;
+
+SteamVRInputBehavior.AXIS_TOUCHPAD_X = 0;
+SteamVRInputBehavior.AXIS_TOUCHPAD_Y = 1;
+
+SteamVRInputBehavior.FIRST_CONTROLLER = 'first';
+SteamVRInputBehavior.LEFT_CONTROLLER = 'left';
+SteamVRInputBehavior.RIGHT_CONTROLLER = 'right';
+
+window.altspace.utilities.behaviors.SteamVRInput = SteamVRInputBehavior;
+},{"babel-runtime/core-js/promise":2,"babel-runtime/helpers/class-call-check":3,"babel-runtime/helpers/create-class":4}]},{},[60]);
+
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/object/define-property"), __esModule: true };
+},{"core-js/library/fn/object/define-property":4}],2:[function(require,module,exports){
+"use strict";
+
+exports["default"] = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+exports.__esModule = true;
+},{}],3:[function(require,module,exports){
+"use strict";
+
+var _Object$defineProperty = require("babel-runtime/core-js/object/define-property")["default"];
+
+exports["default"] = (function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+
+      _Object$defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+})();
+
+exports.__esModule = true;
+},{"babel-runtime/core-js/object/define-property":1}],4:[function(require,module,exports){
+var $ = require('../../modules/$');
+module.exports = function defineProperty(it, key, desc){
+  return $.setDesc(it, key, desc);
+};
+},{"../../modules/$":5}],5:[function(require,module,exports){
+var $Object = Object;
+module.exports = {
+  create:     $Object.create,
+  getProto:   $Object.getPrototypeOf,
+  isEnum:     {}.propertyIsEnumerable,
+  getDesc:    $Object.getOwnPropertyDescriptor,
+  setDesc:    $Object.defineProperty,
+  setDescs:   $Object.defineProperties,
+  getKeys:    $Object.keys,
+  getNames:   $Object.getOwnPropertyNames,
+  getSymbols: $Object.getOwnPropertySymbols,
+  each:       [].forEach
+};
+},{}],6:[function(require,module,exports){
+'use strict';
+
+/**
+ * The SteamVRTrackedObject behavior updates an objects position and rotation to
+ * match the location of a SteamVR input device.
+ *
+ * A [SteamVRInput]{@link module:altspace/utilities/behaviors.SteamVRInput} behavior
+ * must be on the scene containing this object for it to function properly.
+ *
+ * @class SteamVRTrackedObject
+ *
+ * @param {Object} [config]
+ * @param {string} [config.hand="first"] the input device to track. Eitehr SteamVRInput.LEFT_CONTROLLER, SteamVRInput.RIGHT_CONTROLLER, or SteamVRInput.FIRST_CONTROLLER
+ * @memberof module:altspace/utilities/behaviors
+ */
+
+var _createClass = require('babel-runtime/helpers/create-class')['default'];
+
+var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+
+var SteamVRTrackedObjectBehavior = (function () {
+	function SteamVRTrackedObjectBehavior(_ref) {
+		var _ref$hand = _ref.hand;
+		var hand = _ref$hand === undefined ? 'first' : _ref$hand;
+
+		_classCallCheck(this, SteamVRTrackedObjectBehavior);
+
+		this._hand = hand;
+	}
+
+	_createClass(SteamVRTrackedObjectBehavior, [{
+		key: 'awake',
+		value: function awake(object3d, scene) {
+			this._object3d = object3d;
+			this._scene = scene;
+
+			this._steamVRInput = this._scene.getBehaviorByType('SteamVRInput');
+		}
+	}, {
+		key: 'update',
+		value: function update() {
+			var controller = this._steamVRInput[this._hand + "Controller"];
+			var object3d = this._object3d;
+
+			if (controller) {
+				var _controller$position = controller.position;
+				var x = _controller$position.x;
+				var y = _controller$position.y;
+				var z = _controller$position.z;
+
+				object3d.position.set(x, y, z);
+
+				var _controller$rotation = controller.rotation;
+				var x = _controller$rotation.x;
+				var y = _controller$rotation.y;
+				var z = _controller$rotation.z;
+				var w = _controller$rotation.w;
+
+				object3d.quaternion.set(x, y, z, w);
+			}
+		}
+	}]);
+
+	return SteamVRTrackedObjectBehavior;
+})();
+
+window.altspace.utilities.behaviors.SteamVRTrackedObject = SteamVRTrackedObjectBehavior;
+},{"babel-runtime/helpers/class-call-check":2,"babel-runtime/helpers/create-class":3}]},{},[6]);
+
 (function () {
 
-    var version = '0.4.2';
+	var version = '0.11.1';
 
-    if (window.altspace && window.altspace.requestVersion) {
-        window.altspace.requestVersion(version);
-    }
+	if (window.altspace && window.altspace.requestVersion) {
+		window.altspace.requestVersion(version);
+	}
 
 }());
+
+return altspace;
+
+}));
